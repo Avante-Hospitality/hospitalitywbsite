@@ -50,10 +50,10 @@ header.site-header .wrap{
   white-space:nowrap;
   display:flex;
   align-items:center;
-  gap:9px;
+  gap:12px;
 }
-.brand img{height:26px; width:auto; flex:0 0 auto;}
-.foot-brand img{height:20px; width:auto; margin-right:8px; vertical-align:-5px;}
+.brand img{height:39px; width:auto; flex:0 0 auto;}
+.foot-brand img{height:30px; width:auto; margin-right:10px; vertical-align:-8px;}
 nav.main-nav{display:flex; align-items:center; gap:28px;}
 nav.main-nav a.nav-link{
   color:#C7CFD8;
