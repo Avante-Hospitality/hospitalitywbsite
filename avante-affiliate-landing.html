@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avante Travel — Affiliate Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1F22;
+    --ink-soft:#132C2F;
+    --ivory:#FBF7EF;
+    --ivory-dim:#F3EDE0;
+    --teal:#0DCDC2;
+    --teal-deep:#08757A;
+    --sand:#C9A15A;
+    --text:#14231F;
+    --text-soft:#4C5C58;
+    --line:rgba(20,35,31,0.12);
+    --line-light:rgba(251,247,239,0.16);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    color:var(--text);
+    background:var(--ivory);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 20px;}
+  }
+
+  /* ---------- HORIZON MOTIF (SVG) ---------- */
+  .horizon{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    width:100%;
+    height:auto;
+    display:block;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:var(--ink);
+    color:var(--ivory);
+    overflow:hidden;
+    padding:64px 0 0;
+  }
+  .hero-top{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-bottom:72px;
+  }
+  .brand{
+    font-family:'Fraunces',serif;
+    font-size:20px;
+    letter-spacing:0.02em;
+    color:var(--ivory);
+  }
+  .brand span{color:var(--teal);}
+  .hero-nav a{
+    font-size:14px;
+    text-decoration:none;
+    color:rgba(251,247,239,0.7);
+    margin-left:28px;
+  }
+  .hero-nav a:hover{color:var(--ivory);}
+  .hero-body{
+    position:relative;
+    z-index:2;
+    padding-bottom:150px;
+    max-width:680px;
+  }
+  .eyebrow-line{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:28px;
+    font-size:14px;
+    color:var(--teal);
+  }
+  .eyebrow-line .dash{
+    width:28px;height:1px;background:var(--teal);
+  }
+  .hero h1{
+    font-size:clamp(38px,5.6vw,62px);
+    line-height:1.06;
+    color:var(--ivory);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--teal);
+  }
+  .hero-sub{
+    margin-top:24px;
+    font-size:18px;
+    line-height:1.6;
+    color:rgba(251,247,239,0.78);
+    max-width:520px;
+  }
+  .hero-cta-row{
+    margin-top:40px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .btn-primary{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--teal);
+    color:var(--ink);
+    font-weight:600;
+    font-size:15px;
+    padding:15px 26px;
+    border-radius:3px;
+    text-decoration:none;
+    border:none;
+    cursor:pointer;
+  }
+  .btn-ghost{
+    font-size:15px;
+    color:rgba(251,247,239,0.85);
+    text-decoration:none;
+    border-bottom:1px solid rgba(251,247,239,0.35);
+    padding-bottom:2px;
+  }
+  .hero-stats{
+    position:relative;
+    z-index:2;
+    display:flex;
+    gap:56px;
+    padding:36px 0 56px;
+    border-top:1px solid var(--line-light);
+    flex-wrap:wrap;
+  }
+  .stat b{
+    display:block;
+    font-family:'Fraunces',serif;
+    font-size:30px;
+    color:var(--ivory);
+    font-weight:500;
+  }
+  .stat span{
+    font-size:13px;
+    color:rgba(251,247,239,0.6);
+  }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{padding:96px 0;}
+  @media (max-width:640px){ section{padding:64px 0;} }
+  .section-head{
+    max-width:600px;
+    margin-bottom:56px;
+  }
+  .kicker{
+    font-size:14px;
+    color:var(--teal-deep);
+    margin-bottom:14px;
+  }
+  .section-head h2{
+    font-size:clamp(28px,3.6vw,40px);
+    line-height:1.15;
+  }
+  .section-head p{
+    margin-top:18px;
+    font-size:17px;
+    line-height:1.65;
+    color:var(--text-soft);
+  }
+
+  /* ---------- INTRO STRIP ---------- */
+  .intro{
+    background:var(--ivory-dim);
+    border-bottom:1px solid var(--line);
+  }
+  .intro .wrap{
+    padding:64px 32px;
+  }
+  .intro p{
+    font-family:'Fraunces',serif;
+    font-size:clamp(22px,2.6vw,30px);
+    line-height:1.45;
+    font-weight:400;
+  }
+
+  /* ---------- BENEFITS GRID ---------- */
+  .benefits-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:860px){ .benefits-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .benefits-grid{grid-template-columns:1fr;} }
+  .benefits-grid.two-up{grid-template-columns:repeat(2,1fr);}
+  @media (max-width:560px){ .benefits-grid.two-up{grid-template-columns:1fr;} }
+  .benefit{
+    background:var(--ivory);
+    padding:36px 32px;
+  }
+  .benefit .mark{
+    font-size:26px;
+    margin-bottom:18px;
+  }
+  .benefit h3{
+    font-size:19px;
+    margin-bottom:10px;
+    font-weight:500;
+  }
+  .benefit p{
+    font-size:15px;
+    line-height:1.6;
+    color:var(--text-soft);
+  }
+
+  /* ---------- EARNINGS ---------- */
+  .earnings{
+    background:var(--ink);
+    color:var(--ivory);
+  }
+  .earnings .section-head p{color:rgba(251,247,239,0.7);}
+  .earnings .kicker{color:var(--teal);}
+  .earn-figure{
+    display:flex;
+    align-items:baseline;
+    gap:18px;
+    margin-bottom:56px;
+    flex-wrap:wrap;
+  }
+  .earn-figure .num{
+    font-family:'Fraunces',serif;
+    font-size:clamp(56px,9vw,96px);
+    color:var(--teal);
+    line-height:1;
+    font-weight:500;
+  }
+  .earn-figure .lbl{
+    font-size:16px;
+    color:rgba(251,247,239,0.65);
+    max-width:220px;
+    line-height:1.5;
+  }
+  table.payout{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+  }
+  table.payout th{
+    text-align:left;
+    font-weight:500;
+    font-size:13px;
+    color:rgba(251,247,239,0.55);
+    padding:0 16px 14px 0;
+    border-bottom:1px solid var(--line-light);
+  }
+  table.payout td{
+    padding:14px 16px 14px 0;
+    border-bottom:1px solid var(--line-light);
+    color:rgba(251,247,239,0.9);
+  }
+  table.payout tr:last-child td{border-bottom:none;}
+  table.payout td:first-child{color:var(--ivory);font-weight:500;}
+  table.payout .net{color:var(--teal);font-weight:600;}
+  .payout-note{
+    margin-top:20px;
+    font-size:14px;
+    color:rgba(251,247,239,0.6);
+    line-height:1.6;
+  }
+  .payout-note b{color:var(--teal);font-weight:600;}
+
+  /* ---------- BLUEPRINT ---------- */
+  .blueprint{
+    background:var(--ivory);
+  }
+  .blueprint-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    border:1px solid var(--line);
+  }
+  @media (max-width:760px){ .blueprint-grid{grid-template-columns:1fr;} }
+  .blueprint-cell{
+    padding:40px 32px;
+    border-right:1px solid var(--line);
+  }
+  .blueprint-grid .blueprint-cell:last-child{border-right:none;background:var(--ink);color:var(--ivory);}
+  .blueprint-cell .big{
+    font-family:'Fraunces',serif;
+    font-size:40px;
+    color:var(--teal-deep);
+    margin-bottom:10px;
+  }
+  .blueprint-grid .blueprint-cell:last-child .big{color:var(--teal);}
+  .blueprint-cell p{
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--text-soft);
+  }
+  .blueprint-grid .blueprint-cell:last-child p{color:rgba(251,247,239,0.75);}
+
+  /* ---------- TOOLKIT ---------- */
+  .toolkit-list{
+    display:grid;
+    gap:0;
+    border-top:1px solid var(--line);
+  }
+  .toolkit-item{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:32px;
+    padding:28px 0;
+    border-bottom:1px solid var(--line);
+  }
+  @media (max-width:640px){
+    .toolkit-item{grid-template-columns:1fr;gap:8px;}
+  }
+  .toolkit-item h3{
+    font-size:17px;
+    font-weight:500;
+  }
+  .toolkit-item p{
+    font-size:15px;
+    line-height:1.6;
+    color:var(--text-soft);
+    max-width:520px;
+  }
+
+  /* ---------- HOW YOU EARN (multi-vertical) ---------- */
+  .earn-verticals{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:860px){ .earn-verticals{grid-template-columns:repeat(2,1fr);} }
+  .vertical{
+    background:var(--ivory);
+    padding:26px 20px;
+    text-align:left;
+  }
+  .vertical .status{
+    display:inline-block;
+    font-size:11px;
+    letter-spacing:0.02em;
+    padding:3px 8px;
+    border-radius:2px;
+    margin-bottom:12px;
+  }
+  .vertical .status.live{background:rgba(13,205,194,0.14);color:var(--teal-deep);}
+  .vertical .status.soon{background:var(--line);color:var(--text-soft);}
+  .vertical h3{font-size:15px;font-weight:500;margin-bottom:6px;}
+  .vertical p{font-size:13.5px;color:var(--text-soft);line-height:1.5;}
+
+  /* ---------- JOIN STEPS ---------- */
+  .join{
+    background:var(--ivory-dim);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:40px;
+  }
+  @media (max-width:760px){ .steps{grid-template-columns:1fr;gap:36px;} }
+  .step .step-num{
+    font-family:'Fraunces',serif;
+    font-size:15px;
+    color:var(--teal-deep);
+    margin-bottom:14px;
+  }
+  .step h3{
+    font-size:18px;
+    margin-bottom:10px;
+    font-weight:500;
+  }
+  .step p{
+    font-size:15px;
+    line-height:1.6;
+    color:var(--text-soft);
+  }
+  .risk-line{
+    margin-top:56px;
+    padding-top:32px;
+    border-top:1px solid var(--line);
+    display:flex;
+    gap:14px;
+    align-items:baseline;
+    flex-wrap:wrap;
+  }
+  .risk-line .r0{
+    font-family:'Fraunces',serif;
+    font-size:26px;
+    color:var(--teal-deep);
+  }
+  .risk-line p{font-size:15px;color:var(--text-soft);}
+
+  /* ---------- FAQ ---------- */
+  .faq-item{
+    padding:26px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .faq-item h3{
+    font-size:16.5px;
+    font-weight:500;
+    margin-bottom:10px;
+  }
+  .faq-item p{
+    font-size:15px;
+    line-height:1.65;
+    color:var(--text-soft);
+    max-width:640px;
+  }
+
+  /* ---------- FINAL CTA ---------- */
+  .final-cta{
+    background:var(--ink);
+    color:var(--ivory);
+    text-align:left;
+    position:relative;
+    overflow:hidden;
+  }
+  .final-cta .wrap{
+    position:relative;
+    z-index:2;
+    padding:96px 32px 120px;
+  }
+  .final-cta h2{
+    font-size:clamp(30px,4.6vw,48px);
+    line-height:1.15;
+    max-width:640px;
+  }
+  .final-cta h2 em{font-style:italic;color:var(--teal);}
+  .final-cta p{
+    margin-top:20px;
+    font-size:17px;
+    color:rgba(251,247,239,0.72);
+    max-width:480px;
+    line-height:1.6;
+  }
+  .final-cta .btn-primary{margin-top:36px;}
+
+  footer{
+    background:var(--ink);
+    color:rgba(251,247,239,0.5);
+    font-size:13px;
+    padding:28px 0 40px;
+    border-top:1px solid var(--line-light);
+  }
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  /* ---------- STICKY BOTTOM BAR ---------- */
+  .sticky-bar{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    z-index:50;
+    background:var(--teal);
+    color:var(--ink);
+  }
+  .sticky-bar .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:16px 32px;
+  }
+  @media (max-width:640px){
+    .sticky-bar .wrap{padding:14px 20px;flex-direction:column;align-items:stretch;text-align:center;}
+  }
+  .sticky-bar .msg{
+    font-size:15px;
+    font-weight:500;
+  }
+  .sticky-bar .msg span{
+    display:block;
+    font-size:12.5px;
+    font-weight:400;
+    opacity:0.75;
+    margin-top:2px;
+  }
+  .sticky-bar .btn-dark{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--ink);
+    color:var(--ivory);
+    font-weight:600;
+    font-size:15px;
+    padding:13px 24px;
+    border-radius:3px;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  body{padding-bottom:78px;}
+  @media (max-width:640px){ body{padding-bottom:104px;} }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-top">
+    <div class="brand">AVANTE <span>TRAVEL</span></div>
+    <nav class="hero-nav">
+      <a href="#how-it-works">How it works</a>
+      <a href="#earnings">Earnings</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#join">Join</a>
+    </nav>
+  </div>
+
+  <div class="wrap hero-body">
+    <div class="eyebrow-line"><span class="dash"></span>Affiliate Program</div>
+    <h1>Sell luxury getaways.<br>Keep <em>15%</em> of every booking.</h1>
+    <p class="hero-sub">Avante gives you a complete travel business — your own booking platform, done-for-you ad content, and secured payments — built and ready before you post a single link. No inventory, no website, no upfront cost.</p>
+    <div class="hero-cta-row">
+      <a href="#join-bar" class="btn-primary">Become an affiliate →</a>
+      <a href="#how-it-works" class="btn-ghost">See how it works</a>
+    </div>
+  </div>
+
+  <div class="wrap hero-stats">
+    <div class="stat"><b>15%</b><span>Commission on booking volume</span></div>
+    <div class="stat"><b>R0</b><span>Upfront cost to join</span></div>
+    <div class="stat"><b>&lt;60s</b><span>To build and share a trackable link</span></div>
+  </div>
+
+  <svg class="horizon" viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,60 C240,20 480,85 720,50 C960,15 1200,75 1440,40 L1440,90 L0,90 Z" fill="#FBF7EF"></path>
+  </svg>
+</header>
+
+<!-- ============ INTRO STRIP ============ -->
+<div class="intro">
+  <div class="wrap">
+    <p>Avante Travel is a luxury travel business-in-a-box. You bring the audience — your social following, your WhatsApp contacts, your network. We built everything else: the booking platform, the payment infrastructure, the ad creative, and the live resort inventory.</p>
+  </div>
+</div>
+
+<!-- ============ HOW IT WORKS / BENEFITS ============ -->
+<section id="how-it-works">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">What you get</div>
+      <h2>Everything is already built for you</h2>
+      <p>Six pieces of infrastructure, live from day one — no marketing experience, no software, and nothing for you to build.</p>
+    </div>
+  </div>
+  <div class="wrap" style="padding:0 32px;">
+    <div class="benefits-grid">
+      <div class="benefit">
+        <div class="mark">🔗</div>
+        <h3>Your personalised booking platform</h3>
+        <p>You get your own unique, high-tech Avante Agent Portal. Any client who clicks your link is automatically tracked to your profile, so you're credited for every booking they make across Avante's entire live inventory.</p>
+      </div>
+      <div class="benefit">
+        <div class="mark">📣</div>
+        <h3>Done-for-you campaign assets</h3>
+        <p>Professionally designed Canva templates, pre-written social captions, and copy-and-paste WhatsApp scripts — proven to turn casual inquiries into confirmed bookings. No design or copywriting skills needed.</p>
+      </div>
+      <div class="benefit">
+        <div class="mark">🔒</div>
+        <h3>Bulletproof payment &amp; booking infrastructure</h3>
+        <p>You focus on the introduction; Avante handles the machinery — a fully integrated secure payment gateway, live reservation management, date-securing, and official check-in vouchers for your guests.</p>
+      </div>
+      <div class="benefit">
+        <div class="mark">📸</div>
+        <h3>Direct access to the creative stock vault</h3>
+        <p>Full access to Avante's Media Asset Vault — high-resolution resort photography, drone footage, and promo video — paired with your own Link Builder to create campaigns tailored to your audience.</p>
+      </div>
+      <div class="benefit">
+        <div class="mark">💰</div>
+        <h3>Industry-leading 15% commission</h3>
+        <p>One of the most lucrative payout structures in travel. Earn up to 15% commission on your total booking volume — and because these are high-ticket luxury getaways, a single booking can mean thousands in profit.</p>
+      </div>
+      <div class="benefit">
+        <div class="mark">🛡️</div>
+        <h3>Monthly zero-risk financial structure</h3>
+        <p>A true partnership: Avante absorbs the operational risk so you can focus on scaling your audience. Your upfront cost is R0 — no sign-up fees, no software subscriptions, no hidden capital requirements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EARNINGS ============ -->
+<section id="earnings" class="earnings">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">The payout math</div>
+      <h2>Commission that resets — and grows — every month</h2>
+      <p>Your 15% commission on the first R1,967 of sales each month covers platform hosting. From R1,967 to R10,000 you keep the full 15% fee-free. Between R10,000 and R50,000, a standard 2.5% transaction fee applies. Above R50,000 in a single month, fees cap completely.</p>
+    </div>
+
+    <table class="payout">
+      <thead>
+        <tr>
+          <th>Monthly sales volume</th>
+          <th>Gross commission (15%)</th>
+          <th>Avante cost / fees</th>
+          <th>Commission earned (net)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>R1,967 (Monthly setup)</td><td>R295.05</td><td>R295.05</td><td class="net">R0.00</td></tr>
+        <tr><td>R10,000 (Initial goal)</td><td>R1,500.00</td><td>R295.05</td><td class="net">R1,204.95</td></tr>
+        <tr><td>R20,000</td><td>R3,000.00</td><td>R545.05</td><td class="net">R2,454.95</td></tr>
+        <tr><td>R30,000</td><td>R4,500.00</td><td>R795.05</td><td class="net">R3,704.95</td></tr>
+        <tr><td>R40,000</td><td>R6,000.00</td><td>R1,045.05</td><td class="net">R4,954.95</td></tr>
+        <tr><td>R50,000 (Fee cap hit!)</td><td>R7,500.00</td><td>R1,295.05</td><td class="net">R6,204.95</td></tr>
+        <tr><td>R70,000</td><td>R10,500.00</td><td>R1,295.05</td><td class="net">R9,204.95</td></tr>
+        <tr><td>R100,000</td><td>R15,000.00</td><td>R1,295.05</td><td class="net">R13,704.95</td></tr>
+      </tbody>
+    </table>
+    <p class="payout-note">Once you cross <b>R50,000</b> in a single month, every booking you make until the end of the month is 100% fee-free.</p>
+  </div>
+</section>
+
+<!-- ============ BLUEPRINT ============ -->
+<section class="blueprint">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">The onboarding sweetener</div>
+      <h2>The 10% Cash Blueprint</h2>
+      <p>You don't need corporate funnels or paid advertising to build this — just the natural traffic already on your phone.</p>
+    </div>
+  </div>
+  <div class="wrap" style="padding:0 32px;">
+    <div class="blueprint-grid">
+      <div class="blueprint-cell">
+        <div class="big">1,000</div>
+        <p>Your network — casual contacts viewing your WhatsApp status and social feeds over a year.</p>
+      </div>
+      <div class="blueprint-cell">
+        <div class="big">100</div>
+        <p>The 10% shift — just 1 in 10 friends booking exactly one weekend trip or villa getaway per year, at an average spend of R5,000.</p>
+      </div>
+      <div class="blueprint-cell">
+        <div class="big">R61,959.36</div>
+        <p>The lazy payout — pure net take-home cash paid straight to your bank account, after all platform costs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOOLKIT ============ -->
+<section id="toolkit">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Your affiliate hub</div>
+      <h2>One dashboard for links, content, and payouts</h2>
+      <p>Everything you need to run your affiliate business lives in your personal Avante Hub.</p>
+    </div>
+    <div class="toolkit-list">
+      <div class="toolkit-item">
+        <h3>Accommodation link builder</h3>
+        <p>Paste your personal Avante booking link once. Point it at a specific resort or a whole destination, add dates if you have them, and generate a trackable link in seconds — no login required.</p>
+      </div>
+      <div class="toolkit-item">
+        <h3>Resort info links</h3>
+        <p>Send clients straight to one specific resort's photos, description, and details — no dates, no availability check, just the sell.</p>
+      </div>
+      <div class="toolkit-item">
+        <h3>Branded short links</h3>
+        <p>Turn any long booking URL into a clean go.avantetravel.co.za link with one click — still fully tracked back to you, easier to read, type, and trust. Click counts included.</p>
+      </div>
+      <div class="toolkit-item">
+        <h3>Your affiliate storefront</h3>
+        <p>A single shareable link showing up to six live promo cards ("hooks") — each with an image, a booking link, and an optional landing page. Manage each one yourself, or let Avante's admin keep it fresh automatically.</p>
+      </div>
+      <div class="toolkit-item">
+        <h3>Guided tutorials</h3>
+        <p>Step-by-step walkthroughs for building your first link, setting up storefront ads, and the best way to share on WhatsApp, Instagram, Facebook, TikTok, and LinkedIn.</p>
+      </div>
+      <div class="toolkit-item">
+        <h3>Account &amp; payout details</h3>
+        <p>Keep your personal and banking details up to date directly in the Hub, so commission payouts reach you without delay.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MULTI-VERTICAL EARNING ============ -->
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Beyond accommodation</div>
+      <h2>Every link is tracked back to you</h2>
+      <p>Your affiliate ID follows the client across Avante's full travel stack — not just where they book their stay.</p>
+    </div>
+  </div>
+  <div class="wrap" style="padding:0 32px;">
+    <div class="earn-verticals">
+      <div class="vertical">
+        <span class="status live">Live</span>
+        <h3>Accommodation</h3>
+        <p>Resort &amp; villa bookings across the full Avante inventory.</p>
+      </div>
+      <div class="vertical">
+        <span class="status live">Live</span>
+        <h3>Flights</h3>
+        <p>Every flight booked through your personal link is tracked to you.</p>
+      </div>
+      <div class="vertical">
+        <span class="status live">Live</span>
+        <h3>Car rental</h3>
+        <p>Car hire bookings made through your link count toward your commission.</p>
+      </div>
+      <div class="vertical">
+        <span class="status live">Live</span>
+        <h3>Free e-SIM</h3>
+        <p>Every signup through your link is tracked back to your affiliate ID.</p>
+      </div>
+      <div class="vertical">
+        <span class="status soon">Coming soon</span>
+        <h3>Packages &amp; activities</h3>
+        <p>Package builder and activity booking links are on the way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOIN / HOW TO START ============ -->
+<section id="join" class="join">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Getting started</div>
+      <h2>From sign-up to your first booking link</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Apply as an affiliate</h3>
+        <p>Fill out the affiliate application below. Avante reviews every submission before your Hub access goes live.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Set up your Hub</h3>
+        <p>Log in to your personal Avante Hub, add your account and banking details, and your booking links are ready to build immediately.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Share and get credited</h3>
+        <p>Build a trackable link, post it to WhatsApp, Instagram, TikTok, Facebook, or LinkedIn, and every booking made through it is automatically credited to you.</p>
+      </div>
+    </div>
+    <div class="risk-line">
+      <div class="r0">R0 upfront</div>
+      <p>No sign-up fees, no software subscriptions, no hidden capital requirements. Avante absorbs the operational risk so you can focus on your audience.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Questions</div>
+      <h2>Before you apply</h2>
+    </div>
+    <div class="faq-item">
+      <h3>Do I need any travel or marketing experience?</h3>
+      <p>No. Your done-for-you Canva templates, captions, and WhatsApp scripts are built to convert without any prior experience — you're introducing clients, Avante handles the rest.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Do I need to buy inventory or build a website?</h3>
+      <p>No. You get immediate access to your own Avante Agent Portal and live resort inventory — there's nothing to purchase or build.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How does Avante know a booking came from me?</h3>
+      <p>Every link generated in your Hub carries your unique affiliate ID. Any client who clicks it is tracked to your profile for every booking they make, across accommodation, flights, car rental, and e-SIM.</p>
+    </div>
+    <div class="faq-item">
+      <h3>When and how do I get paid?</h3>
+      <p>Commission is calculated from your net booking volume each month, using the tiered fee structure above, and paid out to the bank details you keep updated in your Hub.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What does it cost to join?</h3>
+      <p>R0. There are no sign-up fees, no software subscriptions, and no hidden capital requirements — Avante's only cost to you is the 15% platform fee built into the commission structure above.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta" id="join-bar">
+  <div class="wrap">
+    <h2>Grab your link, share it with your network,<br>and start earning <em>today.</em></h2>
+    <p>Applications are reviewed by Avante Travel before Hub access goes live. It takes a few minutes to apply.</p>
+    <a href="#" class="btn-primary" data-affiliate-form-link="avante-become-affiliate-form.html">Become an affiliate →</a>
+  </div>
+  <svg class="horizon" viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.5;">
+    <path d="M0,70 C240,30 480,90 720,55 C960,20 1200,80 1440,45 L1440,90 L0,90 Z" fill="#08757A"></path>
+  </svg>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© Avante Travel — Affiliate Program</div>
+    <div>Powered by Avante</div>
+  </div>
+</footer>
+
+<!-- ============ STICKY BOTTOM BAR ============ -->
+<div class="sticky-bar">
+  <div class="wrap">
+    <div class="msg">Ready to start earning?<span>Applications reviewed by Avante Travel before your Hub goes live.</span></div>
+    <a href="#" class="btn-dark" id="becomeAffiliateBtn" data-affiliate-form-link="avante-become-affiliate-form.html">Become an Affiliate →</a>
+  </div>
+</div>
+
+<script>
+  // Set the application form link in ONE place — update this URL, both CTAs use it.
+  const AFFILIATE_FORM_URL = "avante-become-affiliate-form.html";
+  document.querySelectorAll('[data-affiliate-form-link]').forEach(function(el){
+    el.setAttribute('href', AFFILIATE_FORM_URL);
+  });
+</script>
+
+</body>
+</html>
