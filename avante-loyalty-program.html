@@ -39,9 +39,17 @@
     .brand-btn:hover{ background:#0f1c93; }
     .accent{ color:var(--orange); }
     .step-badge{ background:var(--orange); }
+
+    /* "Back to main site" bar: fixed to the top so it is always reachable */
+    .back-bar{position:fixed; top:0; left:0; right:0; z-index:30; background:#fff; border-bottom:1px solid #e5e7eb; box-shadow:0 1px 6px rgba(0,0,0,.06);}
+    .back-bar-inner{max-width:56rem; margin:0 auto; padding:10px 16px;}
+    .back-btn{display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border:1.5px solid var(--indigo); border-radius:8px; color:var(--indigo); background:#fff; font-weight:600; font-size:14px; text-decoration:none; line-height:1.2; transition:background .15s, color .15s;}
+    .back-btn:hover{background:var(--indigo); color:#fff;}
+    body{padding-top:76px !important;}
 </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+<div class="back-bar"><div class="back-bar-inner"><a class="back-btn" href="index.html">&larr; Back to main site</a></div></div>
 <div class="w-full max-w-4xl mx-auto bg-white p-8 sm:p-10 lg:p-12 rounded-2xl shadow-lg border border-gray-100">
 
     <header class="text-center mb-10">
@@ -52,9 +60,6 @@
             Joining makes your property a <strong>Featured Resort</strong> across all of Avante's platforms,
             and adds a discount layer on top of your standard rates — managed entirely within Avante.
             Complete this once your property listing request has been submitted.
-        </p>
-        <p class="mt-2 text-sm text-gray-600">
-            Learn more at <a href="http://www.avantetravel.co.za" target="_blank" rel="noopener noreferrer" class="font-medium hover:underline" style="color:var(--indigo)">www.avantetravel.co.za</a>.
         </p>
     </header>
 
