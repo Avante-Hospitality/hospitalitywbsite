@@ -9,10 +9,12 @@
   ============================================================================
   BEFORE THIS GOES LIVE — Jean:
 
-  1. FORMSPREE ENDPOINT (search "FORMSPREE_ENDPOINT" below):
-     Create a Formspree form (can be the same one as avante-channel-manager-
-     listing.html, or a separate one) registered to admin@avantehospitality.co.za
-     with info@avantehospitality.co.za as a verified CC recipient.
+  1. EMAIL DELIVERY (search "RECIPIENT_EMAIL" below):
+     Submissions are emailed to info@avantehospitality.co.za with copies to
+     admin@ and liason@avantehospitality.co.za, via FormSubmit — same setup as
+     avante-channel-manager-listing.html (one-time activation email to info@
+     on the first submission).
+     Arriving from the listing form's thank-you screen pre-fills Section 1.
 
   2. This page is meant to be reached only AFTER a property has already
      submitted a listing request (Type 1's thank-you screen links here).
@@ -133,7 +135,7 @@
         <div class="pt-6 border-t border-gray-200 text-center">
             <button type="submit" id="submit-btn" class="brand-btn w-full sm:w-auto text-white font-bold py-3 px-12 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-transform transform hover:scale-105 active:scale-95">Submit</button>
             <p id="error-message" class="hidden mt-4 text-sm text-red-600"></p>
-            <p class="mt-6 text-sm text-gray-500">Questions? Email <a href="mailto:info@avantehospitality.co.za" class="font-medium hover:underline" style="color:var(--indigo)">info@avantehospitality.co.za</a></p>
+            <p class="mt-6 text-sm text-gray-500">Questions? Email <a href="mailto:admin@avantehospitality.co.za" class="font-medium hover:underline" style="color:var(--indigo)">admin@avantehospitality.co.za</a></p>
         </div>
     </form>
 
@@ -145,7 +147,17 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/FORMSPREE_ENDPOINT';
+    // Submissions are emailed via FormSubmit. Change the addresses here if needed.
+    const RECIPIENT_EMAIL = 'info@avantehospitality.co.za';   // also receives FormSubmit's one-time activation email
+    const CC_EMAIL = 'admin@avantehospitality.co.za,liason@avantehospitality.co.za';
+    const SUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/' + RECIPIENT_EMAIL;
+
+    // Pre-fill property details passed from the listing form
+    const params = new URLSearchParams(window.location.search);
+    [['property_name','property-name'],['contact_person','contact-person'],['email','email'],['phone','phone'],['reference','property-ref']]
+        .forEach(([key, id]) => { if (params.get(key)) document.getElementById(id).value = params.get(key); });
+
+    const today = new Date().toISOString().split('T')[0];
 
     const form = document.getElementById('loyalty-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -164,12 +176,12 @@ document.addEventListener('DOMContentLoaded', function () {
         block.id = ruleId;
         block.innerHTML = `
             <div class="flex justify-between items-center border-b border-gray-200 pb-2">
-                <h4 class="font-semibold text-base text-gray-800">Discount Period ${ruleCounter}</h4>
+                <h4 class="period-title font-semibold text-base text-gray-800">Discount Period</h4>
                 <button type="button" class="remove-rule-btn text-red-500 hover:text-red-700 text-sm font-semibold transition" aria-label="Remove this period">Remove</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">Start Date</label><input type="date" name="${ruleId}_start_date" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm"></div>
-                <div><label class="block text-xs font-medium text-gray-700 mb-1">End Date</label><input type="date" name="${ruleId}_end_date" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm"></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">Start Date</label><input type="date" name="${ruleId}_start_date" required min="${today}" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm"></div>
+                <div><label class="block text-xs font-medium text-gray-700 mb-1">End Date</label><input type="date" name="${ruleId}_end_date" required min="${today}" class="form-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm"></div>
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-700">Which rooms apply for this period?</label>
@@ -194,19 +206,33 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
         rulesContainer.appendChild(block);
+        refreshPeriods();
     };
+
+    // Keep periods numbered 1, 2, 3… and never allow removing the last one
+    function refreshPeriods() {
+        const blocks = rulesContainer.querySelectorAll('.discount-rule-block');
+        blocks.forEach((b, i) => {
+            b.querySelector('.period-title').textContent = 'Discount Period ' + (i + 1);
+            b.querySelector('.remove-rule-btn').classList.toggle('hidden', blocks.length === 1);
+        });
+    }
 
     addRuleBtn.addEventListener('click', createRuleBlock);
     createRuleBlock(); // start with one
 
     rulesContainer.addEventListener('click', (event) => {
-        if (event.target.classList.contains('remove-rule-btn')) event.target.closest('.discount-rule-block').remove();
+        if (event.target.classList.contains('remove-rule-btn')) { event.target.closest('.discount-rule-block').remove(); refreshPeriods(); }
     });
 
     rulesContainer.addEventListener('change', (event) => {
         const target = event.target;
         const parentBlock = target.closest('.discount-rule-block');
         if (!parentBlock) return;
+        if (target.name && target.name.endsWith('_start_date')) {
+            const end = parentBlock.querySelector('[name$="_end_date"]');
+            end.min = target.value || today;
+        }
         if (target.classList.contains('room-scope-radio')) {
             const textarea = parentBlock.querySelector('.selected-rooms-textarea');
             if (target.value === 'selected') { textarea.classList.remove('hidden-section'); textarea.required = true; }
@@ -244,14 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         errorMessage.classList.add('hidden');
 
-        if (FORMSPREE_ENDPOINT.indexOf('FORMSPREE_ENDPOINT') !== -1) {
-            errorMessage.textContent = 'Form is not fully set up yet — the Formspree endpoint still needs to be added by Avante Hospitality.';
-            errorMessage.classList.remove('hidden');
-            return;
-        }
-
         const propertyName = document.getElementById('property-name').value;
-        const perks = Array.from(document.querySelectorAll('input[name="perks"]:checked')).map(el => el.value);
+        const perks = Array.from(document.querySelectorAll('input[name="perks"]:checked')).map(el => el.nextElementSibling.textContent.trim());
 
         const payload = {
             property_name: propertyName,
@@ -259,32 +279,36 @@ document.addEventListener('DOMContentLoaded', function () {
             contact_person: document.getElementById('contact-person').value,
             email: document.getElementById('email').value,
             phone: document.getElementById('phone').value,
-            loyalty_discount_periods: collectDiscountPeriods(),
-            additional_perks: perks,
+            loyalty_discount_periods: collectDiscountPeriods().map((p, i) =>
+                `Period ${i + 1}: ${p.start_date} to ${p.end_date} | Rooms: ${p.selected_rooms} | Discount: ${p.discount}`).join('\n'),
+            additional_perks: perks.length ? perks.join(', ') : 'None',
             other_perks: document.getElementById('other-perks').value,
             _subject: `Loyalty Program Sign-Up — ${propertyName}`,
-            _cc: 'info@avantehospitality.co.za',
-            _replyto: document.getElementById('email').value
+            _cc: CC_EMAIL,
+            _replyto: document.getElementById('email').value,
+            _template: 'table'
         };
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting…';
 
         try {
-            const response = await fetch(FORMSPREE_ENDPOINT, {
+            const response = await fetch(SUBMIT_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (response.ok) {
+            const result = await response.json().catch(() => ({}));
+            if (response.ok && String(result.success) !== 'false') {
                 form.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 successMessage.classList.remove('hidden');
                 setTimeout(() => successMessage.classList.remove('opacity-0'), 10);
             } else {
                 throw new Error('Submission failed');
             }
         } catch (err) {
-            errorMessage.textContent = 'Something went wrong sending your submission. Please try again or email info@avantehospitality.co.za directly.';
+            errorMessage.textContent = 'Something went wrong sending your submission. Please try again or email admin@avantehospitality.co.za directly.';
             errorMessage.classList.remove('hidden');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Submit';

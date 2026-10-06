@@ -9,10 +9,12 @@
   ============================================================================
   BEFORE THIS GOES LIVE — Jean:
 
-  1. FORMSPREE ENDPOINT (search "FORMSPREE_ENDPOINT" below):
-     Create a Formspree form registered to admin@avantehospitality.co.za, add
-     info@avantehospitality.co.za as a verified CC recipient, then paste the
-     real endpoint URL over the placeholder.
+  1. EMAIL DELIVERY (search "RECIPIENT_EMAIL" below):
+     Submissions are emailed to info@avantehospitality.co.za with copies to
+     admin@ and liason@avantehospitality.co.za, via FormSubmit (no account needed).
+     The FIRST submission after going live sends a one-time activation email
+     to info@ — click the confirm link in it; after that, every submission
+     arrives normally. (avante-loyalty-program.html uses the same setup.)
 
   2. TERMS & CONDITIONS TEXT: the modal below contains the full Avante Terms &
      Conditions (document dated 21-9-26), the same text as terms-and-conditions.html.
@@ -130,7 +132,7 @@
 
         <div class="relative flex items-start p-4 rounded-xl border border-gray-200 bg-gray-50">
             <div class="flex h-6 items-center">
-                <input id="accept-terms" name="accept_terms" type="checkbox" checked required class="form-checkbox h-5 w-5 rounded border-gray-300" style="accent-color:var(--indigo)">
+                <input id="accept-terms" name="accept_terms" type="checkbox" required class="form-checkbox h-5 w-5 rounded border-gray-300" style="accent-color:var(--indigo)">
             </div>
             <div class="ml-3 text-sm leading-6">
                 <label for="accept-terms" class="font-medium text-gray-900 cursor-pointer">
@@ -143,7 +145,7 @@
         <div class="pt-4 border-t border-gray-200 text-center">
             <button type="submit" id="submit-btn" class="brand-btn w-full sm:w-auto text-white font-bold py-3 px-12 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-transform transform hover:scale-105 active:scale-95">Submit</button>
             <p id="error-message" class="hidden mt-4 text-sm text-red-600"></p>
-            <p class="mt-6 text-sm text-gray-500">Questions? Email <a href="mailto:info@avantehospitality.co.za" class="font-medium hover:underline" style="color:var(--indigo)">info@avantehospitality.co.za</a></p>
+            <p class="mt-6 text-sm text-gray-500">Questions? Email <a href="mailto:admin@avantehospitality.co.za" class="font-medium hover:underline" style="color:var(--indigo)">admin@avantehospitality.co.za</a></p>
         </div>
     </form>
 
@@ -155,7 +157,7 @@
         <div class="p-6 rounded-xl text-center space-y-3" style="background:#EEF0FC; border:1px solid #c9cff5">
             <h4 class="font-bold text-lg font-display" style="color:var(--navy)">Want to be a Featured Resort?</h4>
             <p class="text-sm text-gray-700">Join the Avante Loyalty Program to feature your property across all our platforms and offer members a rate discount.</p>
-            <a href="avante-loyalty-program.html" class="brand-btn inline-block text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition">Join the Loyalty Program</a>
+            <a href="avante-loyalty-program.html" id="loyalty-link" class="brand-btn inline-block text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90 transition">Join the Loyalty Program</a>
         </div>
     </div>
 </div>
@@ -625,7 +627,10 @@ establishment to “Avante”.</p>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/FORMSPREE_ENDPOINT';
+    // Submissions are emailed via FormSubmit. Change the addresses here if needed.
+    const RECIPIENT_EMAIL = 'info@avantehospitality.co.za';   // also receives FormSubmit's one-time activation email
+    const CC_EMAIL = 'admin@avantehospitality.co.za,liason@avantehospitality.co.za';
+    const SUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/' + RECIPIENT_EMAIL;
 
     const form = document.getElementById('listing-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -637,6 +642,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('open-terms').addEventListener('click', () => termsModal.classList.remove('hidden'));
     document.getElementById('close-terms').addEventListener('click', () => termsModal.classList.add('hidden'));
     document.getElementById('acknowledge-terms').addEventListener('click', () => termsModal.classList.add('hidden'));
+    termsModal.addEventListener('click', (e) => { if (e.target === termsModal) termsModal.classList.add('hidden'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') termsModal.classList.add('hidden'); });
 
     // Channel manager toggle
     const bbidWrap = document.getElementById('bbid-wrap');
@@ -677,12 +684,6 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         errorMessage.classList.add('hidden');
 
-        if (FORMSPREE_ENDPOINT.indexOf('FORMSPREE_ENDPOINT') !== -1) {
-            errorMessage.textContent = 'Form is not fully set up yet — the Formspree endpoint still needs to be added by Avante Hospitality.';
-            errorMessage.classList.remove('hidden');
-            return;
-        }
-
         const propertyName = document.getElementById('property-name').value;
         const channelManager = document.querySelector('.channel-manager-radio:checked')?.value || '';
         const reference = channelManager === 'NightsBridge' ? bbidInput.value : (channelManager === 'Egress/Nebula' ? egressInput.value : 'N/A');
@@ -697,28 +698,40 @@ document.addEventListener('DOMContentLoaded', function () {
             egress_reference: channelManager === 'Egress/Nebula' ? egressInput.value : '',
             accept_terms: document.getElementById('accept-terms').checked,
             _subject: `New Listing Request — ${propertyName} (${channelManager} — ${reference})`,
-            _cc: 'info@avantehospitality.co.za',
-            _replyto: document.getElementById('email').value
+            _cc: CC_EMAIL,
+            _replyto: document.getElementById('email').value,
+            _template: 'table'
         };
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting…';
 
         try {
-            const response = await fetch(FORMSPREE_ENDPOINT, {
+            const response = await fetch(SUBMIT_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (response.ok) {
+            const result = await response.json().catch(() => ({}));
+            if (response.ok && String(result.success) !== 'false') {
+                // Carry the property's details over so the loyalty form opens pre-filled
+                const prefill = new URLSearchParams({
+                    property_name: propertyName,
+                    contact_person: document.getElementById('contact-person').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    reference: reference === 'N/A' ? '' : reference
+                });
+                document.getElementById('loyalty-link').href = 'avante-loyalty-program.html?' + prefill.toString();
                 form.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 successMessage.classList.remove('hidden');
                 setTimeout(() => successMessage.classList.remove('opacity-0'), 10);
             } else {
                 throw new Error('Submission failed');
             }
         } catch (err) {
-            errorMessage.textContent = 'Something went wrong sending your submission. Please try again or email info@avantehospitality.co.za directly.';
+            errorMessage.textContent = 'Something went wrong sending your submission. Please try again or email admin@avantehospitality.co.za directly.';
             errorMessage.classList.remove('hidden');
             submitBtn.disabled = false;
             submitBtn.textContent = 'Submit';
