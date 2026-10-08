@@ -7,12 +7,10 @@ styleFile: "avante/style-channel-manager-listing.njk"
 {# ------------------------------------------------------------------------------
    BEFORE THIS GOES LIVE — Jean:
 
-   1. EMAIL DELIVERY (search "RECIPIENT_EMAIL" below):
-      Submissions are emailed to info@avantehospitality.co.za with copies to
-      admin@ and liason@avantehospitality.co.za, via FormSubmit (no account needed).
-      The FIRST submission after going live sends a one-time activation email
-      to info@ — click the confirm link in it; after that, every submission
-      arrives normally. (avante-loyalty-program.html uses the same setup.)
+   1. SUBMISSIONS: every submission is stored in SQLite and emailed by the API in
+      server/ — this page just POSTs to /api/submissions/listing. Recipients,
+      SMTP credentials and the database location live in .env, not in this file.
+      See README.md ("Forms and submissions").
 
    2. TERMS & CONDITIONS TEXT: the modal below contains the full Avante Terms &
       Conditions (document dated 21-9-26), the same text as terms-and-conditions.html.
@@ -586,10 +584,10 @@ establishment to “Avante”.</p>
 
     <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Submissions are emailed via FormSubmit. Change the addresses here if needed.
-    const RECIPIENT_EMAIL = 'info@avantehospitality.co.za';   // also receives FormSubmit's one-time activation email
-    const CC_EMAIL = 'admin@avantehospitality.co.za,liason@avantehospitality.co.za';
-    const SUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/' + RECIPIENT_EMAIL;
+    // Submissions are saved to SQLite and emailed by the API in server/.
+    // If the API is hosted on a different domain, set API_BASE to its URL.
+    const API_BASE = '';
+    const SUBMIT_ENDPOINT = API_BASE + '/api/submissions/listing';
 
     const form = document.getElementById('listing-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -655,11 +653,7 @@ document.addEventListener('DOMContentLoaded', function () {
             channel_manager: channelManager,
             bbid: channelManager === 'NightsBridge' ? bbidInput.value : '',
             egress_reference: channelManager === 'Egress/Nebula' ? egressInput.value : '',
-            accept_terms: document.getElementById('accept-terms').checked,
-            _subject: `New Listing Request — ${propertyName} (${channelManager} — ${reference})`,
-            _cc: CC_EMAIL,
-            _replyto: document.getElementById('email').value,
-            _template: 'table'
+            accept_terms: document.getElementById('accept-terms').checked
         };
 
         submitBtn.disabled = true;

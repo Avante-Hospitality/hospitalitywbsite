@@ -4,3 +4,12 @@ AA_jo_dev/
 # Node / Eleventy build
 node_modules/
 _site/
+
+# Form submissions database and its WAL sidecar files - contains personal data
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# Local secrets
+.env

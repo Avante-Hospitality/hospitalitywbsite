@@ -550,7 +550,10 @@ establishment to “Avante”.</p>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/FORMSPREE_ENDPOINT';
+    // Submissions are saved to SQLite and emailed by the API in server/.
+    // If the API is hosted on a different domain, set API_BASE to its URL.
+    const API_BASE = '';
+    const SUBMIT_ENDPOINT = API_BASE + '/api/submissions/property-affiliate';
 
     const form = document.getElementById('property-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -567,12 +570,6 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         errorMessage.style.display = 'none';
 
-        if (FORMSPREE_ENDPOINT.indexOf('FORMSPREE_ENDPOINT') !== -1) {
-            errorMessage.textContent = 'Form is not fully set up yet — the Formspree endpoint still needs to be added by Avante Travel.';
-            errorMessage.style.display = 'block';
-            return;
-        }
-
         const propertyName = document.getElementById('property-name').value;
         const city = document.getElementById('property-city').value;
         const country = document.getElementById('property-country').value;
@@ -585,16 +582,14 @@ document.addEventListener('DOMContentLoaded', function () {
             property_city: city,
             property_country: country,
             property_type: document.getElementById('property-type').value,
-            accept_terms: document.getElementById('accept-terms').checked,
-            _subject: `New Property Application — ${propertyName} (${city}, ${country})`,
-            _replyto: document.getElementById('email').value
+            accept_terms: document.getElementById('accept-terms').checked
         };
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting…';
 
         try {
-            const response = await fetch(FORMSPREE_ENDPOINT, {
+            const response = await fetch(SUBMIT_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload)

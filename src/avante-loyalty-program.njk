@@ -8,11 +8,9 @@ styleFile: "avante/style-loyalty-program.njk"
 {# ------------------------------------------------------------------------------
    BEFORE THIS GOES LIVE — Jean:
 
-   1. EMAIL DELIVERY (search "RECIPIENT_EMAIL" below):
-      Submissions are emailed to info@avantehospitality.co.za with copies to
-      admin@ and liason@avantehospitality.co.za, via FormSubmit — same setup as
-      avante-channel-manager-listing.html (one-time activation email to info@
-      on the first submission).
+   1. SUBMISSIONS: stored in SQLite and emailed by the API in server/ — this page
+      POSTs to /api/submissions/loyalty. Recipients, SMTP credentials and the
+      database location live in .env, not in this file. See README.md.
       Arriving from the listing form's thank-you screen pre-fills Section 1.
 
    2. This page is meant to be reached only AFTER a property has already
@@ -116,10 +114,10 @@ styleFile: "avante/style-loyalty-program.njk"
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Submissions are emailed via FormSubmit. Change the addresses here if needed.
-    const RECIPIENT_EMAIL = 'info@avantehospitality.co.za';   // also receives FormSubmit's one-time activation email
-    const CC_EMAIL = 'admin@avantehospitality.co.za,liason@avantehospitality.co.za';
-    const SUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/' + RECIPIENT_EMAIL;
+    // Submissions are saved to SQLite and emailed by the API in server/.
+    // If the API is hosted on a different domain, set API_BASE to its URL.
+    const API_BASE = '';
+    const SUBMIT_ENDPOINT = API_BASE + '/api/submissions/loyalty';
 
     // Pre-fill property details passed from the listing form
     const params = new URLSearchParams(window.location.search);
@@ -251,11 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loyalty_discount_periods: collectDiscountPeriods().map((p, i) =>
                 `Period ${i + 1}: ${p.start_date} to ${p.end_date} | Rooms: ${p.selected_rooms} | Discount: ${p.discount}`).join('\n'),
             additional_perks: perks.length ? perks.join(', ') : 'None',
-            other_perks: document.getElementById('other-perks').value,
-            _subject: `Loyalty Program Sign-Up — ${propertyName}`,
-            _cc: CC_EMAIL,
-            _replyto: document.getElementById('email').value,
-            _template: 'table'
+            other_perks: document.getElementById('other-perks').value
         };
 
         submitBtn.disabled = true;

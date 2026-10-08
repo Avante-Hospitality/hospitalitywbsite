@@ -106,7 +106,10 @@ backLabel: "&larr; Back to affiliate program"
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/FORMSPREE_ENDPOINT';
+    // Submissions are saved to SQLite and emailed by the API in server/.
+    // If the API is hosted on a different domain, set API_BASE to its URL.
+    const API_BASE = '';
+    const SUBMIT_ENDPOINT = API_BASE + '/api/submissions/affiliate';
 
     const form = document.getElementById('affiliate-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -123,12 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         errorMessage.style.display = 'none';
 
-        if (FORMSPREE_ENDPOINT.indexOf('FORMSPREE_ENDPOINT') !== -1) {
-            errorMessage.textContent = 'Form is not fully set up yet — the Formspree endpoint still needs to be added by Avante Travel.';
-            errorMessage.style.display = 'block';
-            return;
-        }
-
         const fullName = document.getElementById('full-name').value;
         const city = document.getElementById('residence-city').value;
         const country = document.getElementById('residence-country').value;
@@ -141,16 +138,14 @@ document.addEventListener('DOMContentLoaded', function () {
             residence_country: country,
             promote_via: document.getElementById('promote-via').value,
             social_link: document.getElementById('social-link').value,
-            accept_terms: document.getElementById('accept-terms').checked,
-            _subject: `New Affiliate Application — ${fullName} (${city}, ${country})`,
-            _replyto: document.getElementById('email').value
+            accept_terms: document.getElementById('accept-terms').checked
         };
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting…';
 
         try {
-            const response = await fetch(FORMSPREE_ENDPOINT, {
+            const response = await fetch(SUBMIT_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload)

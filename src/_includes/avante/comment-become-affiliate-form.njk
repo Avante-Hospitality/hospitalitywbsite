@@ -1,17 +1,21 @@
-<!--
-  ============================================================================
-  BEFORE THIS GOES LIVE — Jean:
+{# ------------------------------------------------------------------------------
+   BEFORE THIS GOES LIVE — Jean:
 
-  1. FORMSPREE ENDPOINT (search "FORMSPREE_ENDPOINT" below):
-     Same setup as the other two forms — create or reuse a Formspree form,
-     paste the real endpoint URL over the placeholder.
+   1. SUBMISSIONS: stored in SQLite and emailed by the API in server/ — this page
+      POSTs to /api/submissions/affiliate. Recipients, SMTP credentials and the
+      database location live in .env, not in this file. See README.md
+      ("Forms and submissions").
 
-  2. TERMS & CONDITIONS TEXT (search "PLACEHOLDER T&C TEXT" below):
-     Replace the draft placeholder in the modal with the final wording.
+   2. TERMS & CONDITIONS TEXT — STILL A DRAFT PLACEHOLDER:
+      The modal below contains draft wording, not final legal text (it even says
+      so on screen). It must be replaced with the approved Avante Terms &
+      Conditions before this form is promoted.
+      Search for "PLACEHOLDER T&C TEXT".
 
-  3. This page is what avante-affiliate-landing.html's "Become an Affiliate"
-     buttons should link to. Once this file's real filename/host path is
-     final, update AFFILIATE_FORM_URL near the bottom of
-     avante-affiliate-landing.html to point here.
-  ============================================================================
--->
+   3. This page is what avante-affiliate-landing.html's "Become an Affiliate"
+      buttons link to — update AFFILIATE_FORM_URL near the bottom of that file
+      if this page's path ever changes.
+
+   NOTE: this is a Nunjucks comment, so these notes are not published in the
+   page source the way the old HTML comment was.
+   ------------------------------------------------------------------------------ #}

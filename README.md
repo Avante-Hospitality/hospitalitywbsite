@@ -7,18 +7,25 @@ place and are shared by all pages.
 
 ## Requirements
 
-Node.js 18 or newer (developed on Node 26).
+Node.js 22.5 or newer — the form API uses Node's built-in `node:sqlite`, so there is no native
+module to compile. (Developed on Node 26; Eleventy alone would run on Node 18.)
 
 ## Commands
 
 ```bash
-npm install      # first time only
-npm run serve    # dev server with live reload -> http://localhost:8080
-npm run build    # write the finished site to _site/
-npm run clean    # delete _site/
+npm install            # first time only
+npm run serve          # Eleventy dev server, live reload -> http://localhost:8080
+npm run build          # write the finished site to _site/
+npm run clean          # delete _site/
+npm run api            # form API + the built site -> http://localhost:3000
+npm run submissions    # show recent form submissions
 ```
 
 `_site/` is git-ignored — it is build output, not source.
+
+The Eleventy dev server on **8080** is for working on how the site looks; it does **not** run the
+form API. To actually submit a form locally, run `npm run api` and use
+**http://localhost:3000**.
 
 ## Layout
 
@@ -34,6 +41,14 @@ src/                        page templates (this is what you edit)
 img/                        images  } copied to _site/ as-is
 styles.css                  styles  }
 eleventy.config.js          build config
+server/                     form API (Express + SQLite)
+  index.js                  routes, and serves _site/
+  db.js                     schema and queries
+  forms.js                  per-form fields and validation
+  mailer.js                 SMTP sending
+  submissions.js            CLI to read submissions back
+data/                       submissions.sqlite — git-ignored, holds personal data
+.env                        local secrets — git-ignored (copy .env.example)
 ```
 
 Page URLs are pinned with a `permalink` in each template's front matter, so the site keeps
@@ -88,14 +103,93 @@ Each avante page sets a `styleFile` in its front matter pointing at its own styl
 `src/_includes/avante/`. The two `AVANTE TRAVEL` forms also set a `commentFile` for their head
 notes, and the `AVANTE TRAVEL` landing pages share `src/_includes/avante/landing.css`.
 
+## Forms and submissions
+
+Four pages have forms. Each posts JSON to the API, which **saves the submission to SQLite first and
+emails it second** — so a mail outage never loses a submission.
+
+| Page                                   | Endpoint                              |
+| -------------------------------------- | ------------------------------------- |
+| `avante-channel-manager-listing.html`  | `POST /api/submissions/listing`        |
+| `avante-loyalty-program.html`          | `POST /api/submissions/loyalty`        |
+| `avante-become-affiliate-form.html`    | `POST /api/submissions/affiliate`      |
+| `avante-property-affiliate-form.html`  | `POST /api/submissions/property-affiliate` |
+
+The API lives in `server/` and also serves `_site/`, so the site and the API share one origin in
+production. If you ever host the API on its own domain, set `API_BASE` in the page's script to that
+URL (it is at the top of each form's script); leave it empty when the API serves the site itself.
+
+Requests are validated against the field list in `server/forms.js` and throttled to 15 per IP per
+15 minutes. A hidden `_gotcha` field can be added to any form to make bots fail silently.
+
+### Email
+
+Email goes out over SMTP using `.env` (copy `.env.example`). Recipients are configuration, not
+page content:
+
+- `MAIL_TO` — usually `info@avantehospitality.co.za`
+- `MAIL_CC` — the additional recipients
+- `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` — any SMTP provider
+
+**Without SMTP settings the forms still work** — submissions are saved and flagged
+`email_status = skipped`. `GET /api/health` reports `email: configured` or `not-configured`.
+The submitter's address is set as `Reply-To`, so hitting reply goes back to them.
+
+### Reading submissions back
+
+```bash
+npm run submissions                      # last 20, all forms
+npm run submissions -- --type listing    # last 20 of one form
+npm run submissions -- --limit 200       # more
+npm run submissions -- --csv subs.csv    # export everything to CSV
+npm run submissions -- --prune 730       # delete anything older than 730 days
+```
+
+The store is `data/submissions.sqlite` — a normal SQLite file that opens in any SQLite tool. It
+holds personal data, so it is git-ignored: never commit it, and treat any copy as sensitive.
+
+### Local testing
+
+```bash
+cp .env.example .env      # add SMTP settings if you want to watch emails go out
+npm run build
+npm run api               # open http://localhost:3000
+```
+
+To see the emails without sending real mail, run a local mail catcher (such as Mailpit or
+`npx maildev`) and point `SMTP_HOST=127.0.0.1`, `SMTP_PORT=1025` at it.
+
 ## Deploying
 
-The build produces `_site/`, and only that directory should be published.
+Two things ship: the static site (`_site/`) and the form API (`server/`). They can run together or
+apart.
+
+### Option A — one Node host (simplest; forms work as-is)
+
+Deploy the repo to Render, Railway, Fly.io or a VPS with the start command:
+
+```bash
+npm ci && npm run build && node server/index.js
+```
+
+The API serves `_site/` itself, so there is a single origin and nothing to configure. Most hosts
+provide `PORT`.
+
+> **Attach a persistent disk/volume and set `DATA_DIR` to its mount path** (e.g. `DATA_DIR=/var/data`).
+> Most of these hosts give you an ephemeral filesystem, so a SQLite file left in the app directory is
+> **erased on every deploy or restart**. Back it up regularly.
+
+### Option B — static site on GitHub Pages, API elsewhere
 
 Pushing to `main` triggers [.github/workflows/deploy.yml](.github/workflows/deploy.yml), which runs
-`npm ci && npm run build` and publishes `_site/` to GitHub Pages. It can also be run manually from
-the Actions tab.
+`npm ci && npm run build` and publishes `_site/` to Pages. **One-time setup:** *Settings → Pages →
+Build and deployment* → Source = **GitHub Actions**. Until that is set the workflow fails at the
+`configure-pages` step with a message saying Pages is not enabled.
 
-**One-time setup:** in the repo, go to *Settings → Pages → Build and deployment* and set **Source**
-to **GitHub Actions**. Until that is done the workflow fails at the `configure-pages` step with a
-message saying Pages is not enabled.
+GitHub Pages cannot run Node, so the form API has to be hosted separately (Option A's host, or any
+Node host) and each form's `API_BASE` must point at it, with `CORS_ORIGIN` set to the Pages domain.
+**Until the API is reachable, the four forms will show an error when submitted.**
+
+### Either way
+
+Do not commit `.env` or `data/` — both are git-ignored on purpose.
