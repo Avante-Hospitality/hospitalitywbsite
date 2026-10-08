@@ -1,57 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Avante Hospitality — Loyalty Program Sign-Up</title>
-
-<!--
-  ============================================================================
-  BEFORE THIS GOES LIVE — Jean:
-
-  1. EMAIL DELIVERY (search "RECIPIENT_EMAIL" below):
-     Submissions are emailed to info@avantehospitality.co.za with copies to
-     admin@ and liason@avantehospitality.co.za, via FormSubmit — same setup as
-     avante-channel-manager-listing.html (one-time activation email to info@
-     on the first submission).
-     Arriving from the listing form's thank-you screen pre-fills Section 1.
-
-  2. This page is meant to be reached only AFTER a property has already
-     submitted a listing request (Type 1's thank-you screen links here).
-     It intentionally does NOT repeat Terms & Conditions acceptance — that
-     already happened on the listing form.
-  ============================================================================
--->
-
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-    :root{ --navy:#2C3E50; --logo-navy:#273A85; --indigo:#1425BE; --orange:#ED8B00; }
-    body{ font-family:'Source Sans 3', sans-serif; color:var(--navy); }
-    h1,h2,h3,h4,.font-display{ font-family:'Playfair Display', serif; }
-    .form-input:focus, .form-checkbox:focus, .form-radio:focus{
-        outline:2px solid transparent; outline-offset:2px;
-        box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--indigo);
-    }
-    #success-message{ transition:opacity .5s ease-in-out; }
-    .hidden-section{ display:none; }
-    .brand-btn{ background:var(--indigo); }
-    .brand-btn:hover{ background:#0f1c93; }
-    .accent{ color:var(--orange); }
-    .step-badge{ background:var(--orange); }
-
-    /* "Back to main site" bar: fixed to the top so it is always reachable */
-    .back-bar{position:fixed; top:0; left:0; right:0; z-index:30; background:#fff; border-bottom:1px solid #e5e7eb; box-shadow:0 1px 6px rgba(0,0,0,.06);}
-    .back-bar-inner{max-width:56rem; margin:0 auto; padding:10px 16px;}
-    .back-btn{display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border:1.5px solid var(--indigo); border-radius:8px; color:var(--indigo); background:#fff; font-weight:600; font-size:14px; text-decoration:none; line-height:1.2; transition:background .15s, color .15s;}
-    .back-btn:hover{background:var(--indigo); color:#fff;}
-    body{padding-top:76px !important;}
-</style>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
-<div class="back-bar"><div class="back-bar-inner"><a class="back-btn" href="index.html">&larr; Back to main site</a></div></div>
+---
+layout: layouts/avante-tailwind.njk
+title: "Avante Hospitality — Loyalty Program Sign-Up"
+permalink: /avante-loyalty-program.html
+commentFile: "avante/comment-loyalty-program.njk"
+styleFile: "avante/style-loyalty-program.njk"
+bodyTag: '<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">'
+---
+{% include "avante/back-bar.njk" %}
 <div class="w-full max-w-4xl mx-auto bg-white p-8 sm:p-10 lg:p-12 rounded-2xl shadow-lg border border-gray-100">
 
     <header class="text-center mb-10">
@@ -316,5 +271,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-</body>
-</html>

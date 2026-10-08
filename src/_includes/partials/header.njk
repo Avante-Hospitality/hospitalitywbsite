@@ -1,0 +1,9 @@
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="{{ site.brandHref }}"><img src="{{ site.brandLogo }}" alt="Avante Hospitality"></a>
+    <nav class="main-nav">{% for item in site.headerNav %}
+      <a class="nav-link{% if item.key == navKey %} active{% endif %}" href="{{ item.url }}">{{ item.label }}</a>{% endfor %}
+    </nav>
+    <a class="btn btn-primary" href="{{ site.headerCta.url }}">{{ site.headerCta.label }}</a>
+  </div>
+</header>

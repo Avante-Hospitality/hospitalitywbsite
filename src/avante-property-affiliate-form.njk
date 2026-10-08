@@ -1,38 +1,99 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms &amp; Conditions — Avante Hospitality</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
+---
+layout: layouts/avante-form.njk
+title: "Avante Travel — Apply to List Your Property"
+permalink: /avante-property-affiliate-form.html
+commentFile: "avante/comment-property-affiliate-form.njk"
+styleFile: "avante/style-property-affiliate-form.njk"
+backHref: "avante-property-owner-landing.html"
+backLabel: "&larr; Back to property owners"
+---
+{% include "avante/form-header.njk" %}
 
-<header class="site-header">
+<main>
   <div class="wrap">
-    <a class="brand" href="index.html"><img src="img/avante_hospitality_logo_wite.webp" alt="Avante Hospitality"></a>
-    <nav class="main-nav">
-      <a class="nav-link" href="index.html">Home</a>
-      <a class="nav-link" href="platforms.html">Platforms</a>
-      <a class="nav-link" href="partners.html">Partners</a>
-      <a class="nav-link" href="avante-loyalty-program.html">Loyalty Program</a>
-      <a class="nav-link" href="team.html">Team</a>
-    </nav>
-    <a class="btn btn-primary" href="avante-channel-manager-listing.html">List your property</a>
+    <div class="form-card">
+
+      <img src="img/logo-icon.png" alt="Avante Hospitality" style="height:36px; width:auto; margin-bottom:20px;">
+      <div class="eyebrow-line"><span class="dash"></span> Property Application</div>
+      <h1>Apply to list your property</h1>
+      <p class="lead">A few details to get started — once approved, you'll log in to your own Avante Hub to add photos, rates, and banking details.</p>
+
+      <form id="property-form">
+        <div class="field-grid">
+          <div class="field">
+            <label for="property-name">Property Name</label>
+            <input type="text" id="property-name" name="property_name" required>
+          </div>
+          <div class="field">
+            <label for="contact-person">Contact Person</label>
+            <input type="text" id="contact-person" name="contact_person" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required>
+          </div>
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="property-city">Property City / Town</label>
+            <input type="text" id="property-city" name="property_city" required>
+          </div>
+          <div class="field">
+            <label for="property-country">Country</label>
+            <input type="text" id="property-country" name="property_country" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="property-type">Property Type</label>
+          <select id="property-type" name="property_type" required>
+            <option value="" disabled selected>Select an option</option>
+            <option value="House">House</option>
+            <option value="Apartment / Flat">Apartment / Flat</option>
+            <option value="Guesthouse">Guesthouse</option>
+            <option value="Lodge">Lodge</option>
+            <option value="Villa">Villa</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="terms-box">
+          <input type="checkbox" id="accept-terms" name="accept_terms" checked required>
+          <div>
+            <label for="accept-terms">I accept the Avante Terms &amp; Conditions.</label>
+            <button type="button" id="open-terms">View Terms &amp; Conditions</button>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" id="submit-btn" class="btn-primary">Submit Application &rarr;</button>
+          <p id="error-message"></p>
+          <p class="submit-note">Questions? Email <a href="mailto:info@avantetravel.co.za">info@avantetravel.co.za</a></p>
+        </div>
+      </form>
+
+      <div id="success-message">
+        <div class="success-panel">
+          <h3>Thank you!</h3>
+          <p>Your application has been sent to Avante Travel. Once approved, we'll set you up with your own Hub to add photos, rates, and banking details.</p>
+        </div>
+      </div>
+
+    </div>
   </div>
-</header>
+</main>
 
-<section class="page-hero">
-  <div class="wrap">
-    <div class="eyebrow">LEGAL</div>
-    <h1>Terms &amp; Conditions</h1>
-    <p class="lead">The terms and conditions governing any business relationship with Avante Hospitality (PTY) Ltd.</p>
-  </div>
-</section>
-
-<section class="legal">
-  <div class="wrap">
-    <h2>Introduction</h2>
+<!-- Terms & Conditions Modal -->
+<div id="terms-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Terms &amp; Conditions</h3>
+      <button type="button" id="close-terms" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <h2>Introduction</h2>
 <p>The following is the <strong>terms and conditions</strong> of Avante
 Hospitality (PTY) Ltd (registration number: 2004/002588/07) from hear on
 referred to as Avante.</p>
@@ -480,36 +541,78 @@ documentation in its name but in the capacity as agent for the
 establishment in respect of accommodation reservations made by the
 establishment to “Avante”.</p>
 <p> </p>
-  </div>
-</section>
-
-<section class="cta-band">
-  <div class="wrap">
-    <h2>Ready to get your property on the map?</h2>
-    <p>List once with Avante — we handle the distribution and the promotion from there.</p>
-    <a class="btn btn-primary" href="avante-channel-manager-listing.html">List your property</a>
-  </div>
-</section>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="foot-grid">
-      <a class="foot-brand" href="index.html" style="text-decoration:none;"><img src="img/avante_hospitality_logo_wite.webp" alt="Avante Hospitality"></a>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="platforms.html">Platforms</a>
-        <a href="partners.html">Partners</a>
-        <a href="team.html">Team</a>
-        <a href="terms-and-conditions.html">Terms &amp; Conditions</a>
-        <a href="avante-affiliate-landing.html">Become an affiliate</a>
-        <a href="avante-property-owner-landing.html">Property affiliate</a>
-      </nav>
     </div>
-    <div class="foot-bottom">
-      <span>&copy; 2026 Avante Hospitality. Founded 2004.</span>
+    <div class="modal-foot">
+      <button type="button" id="acknowledge-terms">Close</button>
     </div>
   </div>
-</footer>
+</div>
 
-</body>
-</html>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/FORMSPREE_ENDPOINT';
+
+    const form = document.getElementById('property-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+
+    // Terms modal
+    const termsModal = document.getElementById('terms-modal');
+    document.getElementById('open-terms').addEventListener('click', () => termsModal.style.display = 'flex');
+    document.getElementById('close-terms').addEventListener('click', () => termsModal.style.display = 'none');
+    document.getElementById('acknowledge-terms').addEventListener('click', () => termsModal.style.display = 'none');
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        errorMessage.style.display = 'none';
+
+        if (FORMSPREE_ENDPOINT.indexOf('FORMSPREE_ENDPOINT') !== -1) {
+            errorMessage.textContent = 'Form is not fully set up yet — the Formspree endpoint still needs to be added by Avante Travel.';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
+        const propertyName = document.getElementById('property-name').value;
+        const city = document.getElementById('property-city').value;
+        const country = document.getElementById('property-country').value;
+
+        const payload = {
+            property_name: propertyName,
+            contact_person: document.getElementById('contact-person').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            property_city: city,
+            property_country: country,
+            property_type: document.getElementById('property-type').value,
+            accept_terms: document.getElementById('accept-terms').checked,
+            _subject: `New Property Application — ${propertyName} (${city}, ${country})`,
+            _replyto: document.getElementById('email').value
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting…';
+
+        try {
+            const response = await fetch(FORMSPREE_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) {
+                form.style.display = 'none';
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.opacity = '1', 10);
+            } else {
+                throw new Error('Submission failed');
+            }
+        } catch (err) {
+            errorMessage.textContent = 'Something went wrong sending your application. Please try again or email info@avantetravel.co.za directly.';
+            errorMessage.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Application →';
+        }
+    });
+});
+</script>
+

@@ -1,0 +1,13 @@
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <a class="foot-brand" href="{{ site.brandHref }}" style="text-decoration:none;"><img src="{{ site.brandLogo }}" alt="Avante Hospitality"></a>
+      <nav>{% for item in site.footerNav %}{% if not (item.omitSelf and item.key == navKey) %}
+        <a href="{{ item.url }}">{{ item.label }}</a>{% endif %}{% endfor %}
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>{{ site.footerCopyright }}</span>
+    </div>
+  </div>
+</footer>

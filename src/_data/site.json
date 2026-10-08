@@ -1,0 +1,22 @@
+{
+  "brandHref": "index.html",
+  "brandLogo": "img/avante_hospitality_logo_wite.webp",
+  "headerNav": [
+    { "key": "home", "label": "Home", "url": "index.html" },
+    { "key": "platforms", "label": "Platforms", "url": "platforms.html" },
+    { "key": "partners", "label": "Partners", "url": "partners.html" },
+    { "key": "loyalty", "label": "Loyalty Program", "url": "avante-loyalty-program.html" },
+    { "key": "team", "label": "Team", "url": "team.html" }
+  ],
+  "headerCta": { "label": "List your property", "url": "avante-channel-manager-listing.html" },
+  "footerNav": [
+    { "key": "home", "label": "Home", "url": "index.html", "omitSelf": false },
+    { "key": "platforms", "label": "Platforms", "url": "platforms.html", "omitSelf": true },
+    { "key": "partners", "label": "Partners", "url": "partners.html", "omitSelf": true },
+    { "key": "team", "label": "Team", "url": "team.html", "omitSelf": true },
+    { "key": "terms", "label": "Terms & Conditions", "url": "terms-and-conditions.html", "omitSelf": false },
+    { "key": "affiliate", "label": "Become an affiliate", "url": "avante-affiliate-landing.html", "omitSelf": true },
+    { "key": "propertyAffiliate", "label": "Property affiliate", "url": "avante-property-owner-landing.html", "omitSelf": true }
+  ],
+  "footerCopyright": "© 2026 Avante Hospitality. Founded 2004."
+}

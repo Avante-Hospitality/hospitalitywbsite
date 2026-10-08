@@ -1,0 +1,31 @@
+<style>
+    :root{ --navy:#2C3E50; --logo-navy:#273A85; --indigo:#1425BE; --orange:#ED8B00; }
+    body{ font-family:'Source Sans 3', sans-serif; color:var(--navy); }
+    h1,h2,h3,h4,.font-display{ font-family:'Playfair Display', serif; }
+    .form-input:focus, .form-checkbox:focus, .form-radio:focus{
+        outline:2px solid transparent; outline-offset:2px;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--indigo);
+    }
+    #success-message{ transition:opacity .5s ease-in-out; }
+    .hidden-section{ display:none; }
+    .brand-btn{ background:var(--indigo); }
+    .brand-btn:hover{ background:#0f1c93; }
+    .accent{ color:var(--orange); }
+    .step-badge{ background:var(--orange); }
+</style>
+<style>
+  /* real T&C text inside the pop-up (Tailwind resets headings and lists, so restore them here) */
+  #terms-modal h2{font-size:15px; font-weight:600; color:#111827; margin:22px 0 8px;}
+  #terms-modal h2:first-child{margin-top:0;}
+  #terms-modal p{margin:0 0 12px;}
+  #terms-modal ul{list-style:disc; padding-left:1.25rem; margin:0 0 12px;}
+  #terms-modal li{margin-bottom:6px;}
+  #terms-modal strong{color:#111827;}
+
+  /* "Back to main site" bar: fixed to the top so it is always reachable */
+  .back-bar{position:fixed; top:0; left:0; right:0; z-index:30; background:#fff; border-bottom:1px solid #e5e7eb; box-shadow:0 1px 6px rgba(0,0,0,.06);}
+  .back-bar-inner{max-width:42rem; margin:0 auto; padding:10px 16px;}
+  .back-btn{display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border:1.5px solid var(--indigo); border-radius:8px; color:var(--indigo); background:#fff; font-weight:600; font-size:14px; text-decoration:none; line-height:1.2; transition:background .15s, color .15s;}
+  .back-btn:hover{background:var(--indigo); color:#fff;}
+  body{padding-top:76px !important;}
+</style>

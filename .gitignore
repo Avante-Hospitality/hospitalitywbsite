@@ -1,2 +1,6 @@
 # Personal dev workspace - never commit
 AA_jo_dev/
+
+# Node / Eleventy build
+node_modules/
+_site/
