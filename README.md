@@ -75,19 +75,18 @@ Add it to `headerNav`/`footerNav` in `src/_data/site.json` if it belongs in the 
 These six pages are campaign landing/application pages with their own design, so they have
 their own layouts rather than using the main site header/footer:
 
-| Pages                                              | Layout                        | Notes                               |
-| -------------------------------------------------- | ----------------------------- | ----------------------------------- |
-| `avante-affiliate-landing`, `avante-property-owner-landing` | `layouts/avante-landing.njk`  | share one stylesheet                |
-| `avante-become-affiliate-form`, `avante-property-affiliate-form` | `layouts/avante-form.njk`     | per-page CSS                        |
-| `avante-channel-manager-listing`                   | `layouts/avante-tailwind.njk` | Tailwind via CDN, per-page CSS      |
-| `avante-loyalty-program`                           | `layouts/base-tailwind.njk`   | **main site header/footer** + Tailwind |
+| Pages                                              | Layout                        | Notes                                    |
+| -------------------------------------------------- | ----------------------------- | ---------------------------------------- |
+| `avante-affiliate-landing`, `avante-property-owner-landing` | `layouts/avante-landing.njk`  | AVANTE TRAVEL branding, own stylesheet   |
+| `avante-become-affiliate-form`, `avante-property-affiliate-form` | `layouts/avante-form.njk`     | AVANTE TRAVEL branding, per-page CSS     |
+| `avante-channel-manager-listing`, `avante-loyalty-program` | `layouts/base-tailwind.njk`   | **main site header/footer**, per-page CSS |
 
 `layouts/base-tailwind.njk` is the normal main-site chrome — the same header and footer as every
-other page — plus Tailwind, for pages that still rely on Tailwind's utility classes.
+other page — plus Tailwind, for the pages that still rely on Tailwind's utility classes.
 
-Each has a `styleFile` in its front matter pointing at its own style fragment in
-`src/_includes/avante/`, and (except the loyalty page) a `commentFile` for its head notes. The
-`AVANTE TRAVEL` landing pages share `src/_includes/avante/landing.css`.
+Each avante page sets a `styleFile` in its front matter pointing at its own style fragment in
+`src/_includes/avante/`. The two `AVANTE TRAVEL` forms also set a `commentFile` for their head
+notes, and the `AVANTE TRAVEL` landing pages share `src/_includes/avante/landing.css`.
 
 ## Deploying
 
