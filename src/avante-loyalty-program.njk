@@ -1,16 +1,29 @@
 ---
-layout: layouts/avante-tailwind.njk
+layout: layouts/base-tailwind.njk
 title: "Avante Hospitality — Loyalty Program Sign-Up"
 permalink: /avante-loyalty-program.html
-commentFile: "avante/comment-loyalty-program.njk"
+navKey: loyalty
 styleFile: "avante/style-loyalty-program.njk"
-bodyTag: '<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">'
 ---
-{% include "avante/back-bar.njk" %}
+{# ------------------------------------------------------------------------------
+   BEFORE THIS GOES LIVE — Jean:
+
+   1. EMAIL DELIVERY (search "RECIPIENT_EMAIL" below):
+      Submissions are emailed to info@avantehospitality.co.za with copies to
+      admin@ and liason@avantehospitality.co.za, via FormSubmit — same setup as
+      avante-channel-manager-listing.html (one-time activation email to info@
+      on the first submission).
+      Arriving from the listing form's thank-you screen pre-fills Section 1.
+
+   2. This page is meant to be reached only AFTER a property has already
+      submitted a listing request (Type 1's thank-you screen links here).
+      It intentionally does NOT repeat Terms & Conditions acceptance — that
+      already happened on the listing form.
+   ------------------------------------------------------------------------------ #}
+<section class="px-4 sm:px-6 py-14 sm:py-16">
 <div class="w-full max-w-4xl mx-auto bg-white p-8 sm:p-10 lg:p-12 rounded-2xl shadow-lg border border-gray-100">
 
     <header class="text-center mb-10">
-        <img src="img/logo-icon.png" alt="Avante Hospitality" style="height:44px; width:auto; margin:0 auto 18px;">
         <span class="step-badge inline-block text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4">Loyalty Program</span>
         <h1 class="text-3xl sm:text-4xl font-bold tracking-tight" style="color:var(--navy)">Join the Avante Loyalty Program</h1>
         <p class="mt-3 text-base text-gray-600 max-w-2xl mx-auto">
@@ -99,6 +112,7 @@ bodyTag: '<body class="bg-gray-100 flex items-center justify-center min-h-screen
         <p class="text-sm">Your Loyalty Program details have been sent to our team — we'll set up your rate plan and feature your property once your listing is live.</p>
     </div>
 </div>
+</section>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
