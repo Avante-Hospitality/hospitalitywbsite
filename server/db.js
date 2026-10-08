@@ -55,13 +55,21 @@ function markEmailStatus(id, status, error) {
   markStmt.run(status, error ? String(error).slice(0, 500) : null, id);
 }
 
-function listSubmissions({ formType, limit = 20 } = {}) {
+function listSubmissions({ formType, limit = 20, offset = 0 } = {}) {
   const capped = Math.min(Math.max(Number(limit) || 20, 1), 5000);
+  const skip = Math.max(Number(offset) || 0, 0);
   return formType
-    ? db.prepare(
-        'SELECT * FROM submissions WHERE form_type = ? ORDER BY created_at DESC, id DESC LIMIT ?'
-      ).all(formType, capped)
-    : db.prepare('SELECT * FROM submissions ORDER BY created_at DESC, id DESC LIMIT ?').all(capped);
+    ? db
+        .prepare('SELECT * FROM submissions WHERE form_type = ? ORDER BY id DESC LIMIT ? OFFSET ?')
+        .all(formType, capped, skip)
+    : db.prepare('SELECT * FROM submissions ORDER BY id DESC LIMIT ? OFFSET ?').all(capped, skip);
+}
+
+function countSubmissions(formType) {
+  const row = formType
+    ? db.prepare('SELECT COUNT(*) AS n FROM submissions WHERE form_type = ?').get(formType)
+    : db.prepare('SELECT COUNT(*) AS n FROM submissions').get();
+  return Number(row.n);
 }
 
 function pruneOlderThan(days) {
@@ -78,5 +86,6 @@ module.exports = {
   insertSubmission,
   markEmailStatus,
   listSubmissions,
+  countSubmissions,
   pruneOlderThan,
 };

@@ -7,10 +7,10 @@
     "build": "eleventy",
     "serve": "eleventy --serve",
     "clean": "node -e \"require('fs').rmSync('_site',{recursive:true,force:true})\"",
-    "api": "node server/index.js",
-    "dev": "node --watch server/index.js",
-    "start": "npm run build && node server/index.js",
-    "submissions": "node server/submissions.js"
+    "api": "node --env-file-if-exists=.env server/index.js",
+    "dev": "node --watch --env-file-if-exists=.env server/index.js",
+    "start": "npm run build && node --env-file-if-exists=.env server/index.js",
+    "submissions": "node --env-file-if-exists=.env server/submissions.js"
   },
   "engines": {
     "node": ">=22.5"

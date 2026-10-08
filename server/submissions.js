@@ -13,6 +13,7 @@
 const fs = require('node:fs');
 const { listSubmissions, pruneOlderThan, dbPath } = require('./db');
 const { FORMS } = require('./forms');
+const { submissionsCsv, parsePayload } = require('./csv');
 
 const args = process.argv.slice(2);
 const hasFlag = (name) => args.includes(`--${name}`);
@@ -41,29 +42,9 @@ if (!rows.length) {
   process.exit(0);
 }
 
-const parsePayload = (row) => {
-  try {
-    return JSON.parse(row.payload);
-  } catch {
-    return {};
-  }
-};
-
 if (hasFlag('csv')) {
   const out = valueOf('csv', 'submissions.csv');
-  const payloadKeys = [...new Set(rows.flatMap((r) => Object.keys(parsePayload(r))))];
-  const headers = ['id', 'received', 'form', 'email_status', ...payloadKeys];
-  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const lines = [headers.map(esc).join(',')];
-  for (const row of rows) {
-    const p = parsePayload(row);
-    lines.push(
-      [row.id, row.created_at, row.form_type, row.email_status, ...payloadKeys.map((k) => p[k] ?? '')]
-        .map(esc)
-        .join(',')
-    );
-  }
-  fs.writeFileSync(out, lines.join('\r\n') + '\r\n', 'utf8');
+  fs.writeFileSync(out, submissionsCsv(rows), 'utf8');
   console.log(`Wrote ${rows.length} submission(s) to ${out}`);
   process.exit(0);
 }

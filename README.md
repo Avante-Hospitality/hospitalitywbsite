@@ -148,6 +148,26 @@ npm run submissions -- --prune 730       # delete anything older than 730 days
 The store is `data/submissions.sqlite` — a normal SQLite file that opens in any SQLite tool. It
 holds personal data, so it is git-ignored: never commit it, and treat any copy as sensitive.
 
+### Viewing and exporting
+
+There is a small admin page at **/admin** that lists submissions in a table with a filter per form,
+paging, a per-row field breakdown, and an **Export CSV** button that respects the current filter.
+
+- It is **disabled until `ADMIN_PASSWORD` is set** in `.env`. With no password it returns 503 rather
+  than showing anything — deliberate, so the data can't be exposed by forgetting a setting.
+- Signing in sets a signed, `HttpOnly`, `SameSite=Strict` session cookie (12 hours). Login attempts
+  are throttled, and form posts from another site are rejected.
+- The page runs **no JavaScript at all** (CSP blocks scripts) and every stored value is
+  HTML-escaped, so a submission cannot inject script into whoever is reading it.
+- The CSV export neutralises values starting with `=`, `+`, `-` or `@`, so a submission cannot turn
+  into a formula when the file is opened in Excel.
+
+Use a long unique password, change it before going public, and serve the API over HTTPS in
+production — the session cookie is marked `Secure` automatically on HTTPS requests.
+
+For cron jobs and scripting, `npm run submissions` needs no password because it reads the database
+directly on the server.
+
 ### Local testing
 
 ```bash

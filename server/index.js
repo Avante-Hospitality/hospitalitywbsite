@@ -6,15 +6,19 @@ const express = require('express');
 const { insertSubmission, markEmailStatus } = require('./db');
 const { FORMS, validate, buildSubject, metaFor } = require('./forms');
 const mailer = require('./mailer');
+const { router: adminRouter } = require('./admin');
 
 const PORT = Number(process.env.PORT || 3000);
 const app = express();
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: '32kb' }));
+// The /admin sign-in form posts url-encoded, so it needs its own parser.
+app.use(express.urlencoded({ extended: false, limit: '16kb' }));
 
 // Only needed when the static site is hosted somewhere other than this server.
-app.use((req, res, next) => {
+// Scoped to /api so it can never widen access to the admin pages.
+app.use('/api', (req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || '*');
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -100,6 +104,8 @@ app.post('/api/submissions/:formType', async (req, res) => {
   return res.json({ success: true, id });
 });
 
+app.use('/admin', adminRouter);
+
 const siteDir = path.join(__dirname, '..', '_site');
 app.use(express.static(siteDir, { extensions: ['html'] }));
 app.use((req, res) => res.status(404).send('Not found'));
@@ -112,6 +118,11 @@ app.listen(PORT, () => {
       mailer.isConfigured()
         ? 'SMTP configured'
         : 'SMTP NOT configured - submissions are still saved, but not emailed (see .env.example)'
+    }`
+  );
+  console.log(
+    `  admin: ${
+      process.env.ADMIN_PASSWORD ? 'enabled at /admin' : 'DISABLED - set ADMIN_PASSWORD in .env to enable'
     }`
   );
 });
