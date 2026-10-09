@@ -14,18 +14,31 @@ module to compile. (Developed on Node 26; Eleventy alone would run on Node 18.)
 
 ```bash
 npm install            # first time only
-npm run serve          # Eleventy dev server, live reload -> http://localhost:8080
+npm run dev            # everything on http://localhost:8000   <- use this
 npm run build          # write the finished site to _site/
 npm run clean          # delete _site/
-npm run api            # form API + the built site -> http://localhost:3000
 npm run submissions    # show recent form submissions
 ```
 
 `_site/` is git-ignored — it is build output, not source.
 
-The Eleventy dev server on **8080** is for working on how the site looks; it does **not** run the
-form API. To actually submit a form locally, run `npm run api` and use
-**http://localhost:3000**.
+**Use `npm run dev`.** It runs two things side by side so there is a single URL:
+
+- Eleventy rebuilds `_site/` whenever a template, partial or style changes (refresh to see it)
+- the Node server serves `_site/` **and** handles `/api` and `/admin`
+
+That combination matters. The Eleventy dev server on its own only serves static files, so the forms
+and `/admin` do not exist on it — running just that and opening the pages is the usual way to hit a
+confusing *"Cannot GET /admin"*.
+
+The pieces are still available individually:
+
+| Command | What it does |
+| ------- | ------------ |
+| `npm run dev` | Eleventy watch **+** Node server, together on `:8000` (recommended) |
+| `npm run api` | Node server only — site, forms and admin; no template rebuilding |
+| `npm run serve` | Eleventy dev server only, with live reload — **no** forms or admin |
+| `npm start` | One-off build, then the Node server |
 
 ## Layout
 
@@ -172,8 +185,7 @@ directly on the server.
 
 ```bash
 cp .env.example .env      # add SMTP settings if you want to watch emails go out
-npm run build
-npm run api               # open http://localhost:3000
+npm run dev               # open http://localhost:8000
 ```
 
 To see the emails without sending real mail, run a local mail catcher (such as Mailpit or
