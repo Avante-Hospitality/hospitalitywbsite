@@ -443,6 +443,8 @@ footer.site-footer nav{display:flex; gap:22px; flex-wrap:wrap;}
 footer.site-footer nav a{color:#9FB0BD; text-decoration:none; font-size:14.5px;}
 footer.site-footer nav a:hover{color:#fff;}
 footer.site-footer .foot-bottom{font-size:13px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+footer.site-footer .foot-bottom a{text-decoration:none;}
+footer.site-footer .foot-bottom a:hover{color:#fff; text-decoration:underline;}
 
 /* ---------- BREATHING ROOM: calmer spacing on phones ---------- */
 @media (max-width:720px){
