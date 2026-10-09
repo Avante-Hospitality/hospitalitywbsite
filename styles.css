@@ -135,6 +135,27 @@ nav.main-nav a.nav-link.active{color:#fff; border-bottom-color:var(--orange);}
 .hero-ctas{display:flex; gap:14px; margin-top:38px; flex-wrap:wrap;}
 @media (max-width:640px){ .page-hero h1{font-size:32px;} }
 
+/* Dark hero variant. Used by the platforms page so it opens on the same navy
+   band language as the rest of that page. */
+.page-hero--dark{
+  background:var(--navy-deep);
+  border-bottom-color:rgba(255,255,255,.10);
+  position:relative;
+  overflow:hidden;
+}
+.page-hero--dark h1{color:#fff;}
+.page-hero--dark p.lead{color:#C7CFD8;}
+.page-hero--dark .wrap{position:relative; z-index:1;}
+.page-hero--dark::after{
+  content:"";
+  position:absolute; left:-70px; bottom:-70px;
+  width:0; height:0;
+  border-right:190px solid transparent;
+  border-bottom:190px solid var(--orange);
+  opacity:.14;
+  pointer-events:none;
+}
+
 .page-hero .hero-inner{
   display:grid;
   grid-template-columns:1fr 420px;
@@ -391,7 +412,7 @@ nav.main-nav a.nav-link.active{color:#fff; border-bottom-color:var(--orange);}
 /* ---------- PLATFORMS PAGE ---------- */
 /* Distribution routes: dark band of icon cards */
 .plat-routes{
-  background:var(--navy-deep);
+  background:var(--navy);
   color:#fff;
   padding:96px 0 104px;
   position:relative;
