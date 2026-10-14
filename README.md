@@ -241,21 +241,25 @@ Do not commit `.env` or `data/` — both are git-ignored on purpose.
 xneelo's Web Hosting is a managed **LAMP/PHP** platform. Node cannot run there, and their
 [Acceptable Use Policy](https://xneelo.co.za/legal/acceptable-use-policy/) does not allow a
 long-running server process on shared hosting. `xneelo/` therefore holds the same form API written
-in **PHP**, plus the Apache rule that keeps the existing `/api/submissions/<form>` URLs — so not one
-line of the site's own JavaScript changes.
+in **PHP**, so the whole site runs on the hosting package on its own.
+
+The site is served from a folder inside `public_html` rather than from its root, which keeps its files
+clear of the other domains in the account. A short block in `public_html/.htaccess` maps the domain
+root onto that folder, so the address bar never shows the folder name. Every rule in that block is
+limited to this site's own domain, because the other domains share that file — see the notes below.
 
 ### What goes where
 
-```
-avante-app/       upload NEXT TO public_html (not inside it)
-  config.php      your settings — create it from config.example.php
-  lib/            validation, database, SMTP, admin
-  bin/            install.php, prune.php, selfcheck.php
+Everything for the site lives in one folder, `public_html/avantehospitality`:
 
-public_html/      upload its CONTENTS into your existing public_html
-  api/            submit.php, health.php
-  admin/index.php the submissions admin (the footer's "Admin" link)
-  index.html ...  the built site (from _site/)
+```
+public_html/
+  .htaccess              the lines in xneelo/HTACCESS-ADDITIONS.txt go here
+  avantehospitality/     upload this whole folder
+    index.html ...       the built site (from _site/)
+    api/                 submit.php, health.php
+    admin/index.php      the submissions admin (the footer's "Admin" link)
+    avante-app/          the application: config.php, lib/, bin/
 ```
 
 ### Steps
@@ -263,14 +267,16 @@ public_html/      upload its CONTENTS into your existing public_html
 1. Build the site: `npm run build`.
 2. In the xneelo Control Panel open **Manage MySQL** and create a database and a user. Copy the
    exact names it shows you.
-3. Copy `xneelo/avante-app/config.example.php` to `config.php` (keep it in `avante-app/`) and fill in
-   the database details, SMTP settings, recipients and an `admin.password`.
-4. Upload using the panel's **File Manager**, or SFTP on port 22:
-   - everything in `_site/` → `public_html/`
-   - `xneelo/public_html/api/` and `xneelo/public_html/admin/` → `public_html/`
-   - `xneelo/avante-app/` → next to `public_html/`, i.e. one level up from it
-5. Pick a PHP version (8.2 or newer) with the panel's **PHP Config** tool.
-6. Open `https://yourdomain.co.za/api/health.php`. You want
+3. Fill in `avante-app/config.php` — the packaged zip already has it filled in. From a fresh clone,
+   copy `config.example.php` to `config.php` first.
+4. Upload using the panel's **File Manager**, or SFTP on port 22: put the whole `avantehospitality/`
+   folder into your existing `public_html/`.
+5. Add the lines from `xneelo/HTACCESS-ADDITIONS.txt` to `public_html/.htaccess`. If that file already
+   exists, paste them at the **end** rather than replacing it — the last line stops Apache processing
+   any further rules. Each line is limited to `avantehospitality.co.za`, so the other domains cannot
+   be affected by them.
+6. Pick a PHP version (8.2 or newer) with the panel's **PHP Config** tool.
+7. Open `https://yourdomain.co.za/api/health.php`. You want
    `{"ok":true,"database":"ok","email":"configured",...}`.
 
 There is no install step to forget: the tables are created the first time a form is submitted.
@@ -312,15 +318,27 @@ no more often than every two hours).
 
 ### Notes
 
-- `avante-app/config.php` holds your database and mailbox passwords. It sits outside `public_html` so
-  it can never be downloaded, and it is git-ignored. If you can only create folders *inside*
-  `public_html`, upload `avante-app` there instead — it ships with its own `.htaccess` that denies all
-  web access to the folder.
-- **No `.htaccess` is needed, and none is included.** A shared `public_html` usually already has one
-  (HTTPS forcing, WAF rules, WordPress permalinks) and overwriting it would break every site in the
-  account. Nothing here requires a change to Apache configuration.
-- **Other domains in the same account are untouched.** xneelo Multiple domains live in sub-folders of
-  `public_html`, each with its own root, and this deployment only adds `api/` and `admin/` at the top
-  level. Do check that neither folder name is already used by another site before uploading.
+- `avante-app/config.php` holds your database and mailbox passwords. It is git-ignored, and it ships
+  inside the site folder protected by `avante-app/.htaccess`, which denies all web access — a pattern
+  xneelo documents. If you would rather keep it outside the web root entirely, upload `avante-app`
+  next to `public_html` (or one level above it when the site is nested); the app looks in all three
+  places.
+- **The `.htaccess` block is the one thing added by hand**, and it is only needed for the folder
+  mapping. Never replace an existing `public_html/.htaccess`: other sites in the account may depend on
+  it. Append the block at the end.
+- **A `public_html/.htaccess` is also read by the other domains in the account**, because they are
+  served from folders inside `public_html`. That was verified under Apache rather than assumed, and it
+  is why every rule in the block above names `avantehospitality.co.za`: without that condition the
+  other domains get rewritten into this site's folder and return 500s. If an existing `.htaccess`
+  there has rules with no domain condition, those rules are already being applied to the other
+  domains — worth knowing, though nothing needs changing today.
+- Other domains stay reachable on their own addresses, but no longer as
+  `avantehospitality.co.za/<theirdomain>/`, because that path is rewritten into the site folder.
+- The site answers as `avantehospitality.co.za` and `www.avantehospitality.co.za`. Other hostnames
+  (the server's own name, for instance) will not serve the root, because the rules do not match them.
+- `https://avantehospitality.co.za/avantehospitality/` redirects to the root, so the site has one
+  address rather than two.
+- If xneelo support will point the main domain's document root at the folder, the `.htaccess` block
+  can be dropped altogether — that is the cleaner equivalent.
 - Throttling, the honeypot, validation, CSV formula neutralising and the admin sign-in all behave as
   documented above. The throttle counters live in MySQL, so they survive between requests.

@@ -5,12 +5,19 @@
  * is set up. Open /api/health.php in a browser after uploading.
  */
 
-$bootstrap = __DIR__ . '/../../avante-app/bootstrap.php';
-if (!is_file($bootstrap)) {
-    $bootstrap = __DIR__ . '/../avante-app/bootstrap.php';
+$bootstrap = '';
+foreach ([
+    __DIR__ . '/../avante-app/bootstrap.php',
+    __DIR__ . '/../../avante-app/bootstrap.php',
+    __DIR__ . '/../../../avante-app/bootstrap.php',
+] as $candidate) {
+    if (is_file($candidate)) {
+        $bootstrap = $candidate;
+        break;
+    }
 }
 
-if (!is_file($bootstrap)) {
+if ($bootstrap === '') {
     http_response_code(500);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode(['ok' => false, 'database' => 'not-checked', 'error' => 'The form application is not installed.']);

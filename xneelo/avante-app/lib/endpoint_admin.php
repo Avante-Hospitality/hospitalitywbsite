@@ -87,12 +87,26 @@ function avante_admin_clear_cookie(): void
     unset($_COOKIE[AVANTE_ADMIN_COOKIE]);
 }
 
-/* A full URL is used for redirects so they work from any folder depth. */
+/*
+ * A full URL is used for redirects. It is built from the address the browser
+ * asked for (REQUEST_URI) rather than SCRIPT_NAME, because a rewrite rule may
+ * have pointed the request at the site's own folder on disk - which must never
+ * appear in the address bar.
+ */
 function avante_admin_absolute_url(string $query = ''): string
 {
-    $dir = rtrim(str_replace('\\', '/', dirname((string) ($_SERVER['SCRIPT_NAME'] ?? '/admin/index.php'))), '/');
+    $path = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/admin/'), PHP_URL_PATH);
+    if ($path === '') {
+        $path = '/admin/';
+    }
+    if (!str_ends_with($path, '/')) {
+        // /admin -> /admin/ and /admin/index.php -> /admin/
+        $path = str_ends_with($path, '.php') ? rtrim(dirname($path), '/\\') . '/' : $path . '/';
+    }
+
     $url = (avante_secure_request() ? 'https://' : 'http://')
-        . (string) ($_SERVER['HTTP_HOST'] ?? 'localhost') . $dir . '/';
+        . (string) ($_SERVER['HTTP_HOST'] ?? 'localhost') . $path;
+
     return $query !== '' ? $url . '?' . $query : $url;
 }
 

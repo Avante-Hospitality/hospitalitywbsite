@@ -3,18 +3,26 @@
 /*
  * Form submissions.
  *
- * Reached as /api/submissions/<form>, which .htaccess rewrites onto this file.
- * The application itself lives outside the web root, in ../avante-app.
+ * The pages POST to /api/submit.php?form=<type>. When the site is served from a
+ * sub-folder, the .htaccess rewrite points the public URL at this file, so the
+ * address bar never shows the folder name.
  */
 
-$bootstrap = __DIR__ . '/../../avante-app/bootstrap.php';
-if (!is_file($bootstrap)) {
-    // Some hosts will not let you create folders next to public_html. In that
-    // case upload avante-app inside public_html instead (see the README).
-    $bootstrap = __DIR__ . '/../avante-app/bootstrap.php';
+// The application usually sits inside the site folder, but it also works from
+// beside that folder or beside public_html.
+$bootstrap = '';
+foreach ([
+    __DIR__ . '/../avante-app/bootstrap.php',
+    __DIR__ . '/../../avante-app/bootstrap.php',
+    __DIR__ . '/../../../avante-app/bootstrap.php',
+] as $candidate) {
+    if (is_file($candidate)) {
+        $bootstrap = $candidate;
+        break;
+    }
 }
 
-if (!is_file($bootstrap)) {
+if ($bootstrap === '') {
     http_response_code(500);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
