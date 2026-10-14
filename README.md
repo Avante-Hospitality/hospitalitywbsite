@@ -266,8 +266,10 @@ downloaded. If you would rather keep it outside the web root entirely, upload it
 ### Steps
 
 1. Build the site: `npm run build`.
-2. In the xneelo Control Panel open **Manage MySQL** and create a database and a user. Copy the
-   exact names it shows you.
+2. In the xneelo Control Panel open **Manage MySQL** and create a database and a user, then copy the
+   details it shows you. **The host is not `localhost`** — xneelo runs the database on its own server,
+   named like `sql8.cpt1.host-h.net`. Using `localhost` fails with a confusing
+   *"No such file or directory"*, because PHP goes looking for a database socket on the web host.
 3. Fill in `avante-app/config.php` — the packaged zip already has it filled in. From a fresh clone,
    copy `config.example.php` to `config.php` first.
 4. Upload using the panel's **File Manager**, or SFTP on port 22: copy the **contents** of the
@@ -316,6 +318,8 @@ no more often than every two hours).
 
 ### Notes
 
+- **The database host is a server name, not `localhost`** (here: `sql8.cpt1.host-h.net`). Get it wrong
+  and `api/health.php` reports `"database":"error"` while the forms say they could not save.
 - `avante-app/config.php` holds your database and mailbox passwords. It is git-ignored, and it ships
   with an `avante-app/.htaccess` that denies all web access, so the file cannot be downloaded — a
   pattern xneelo documents. If you would rather keep it outside the web root, upload `avante-app` next

@@ -13,9 +13,14 @@
 return [
     // --- Database ---------------------------------------------------------
     // Create the database and user in the xneelo Control Panel under
-    // "Manage MySQL", then copy the exact names it shows you.
+    // "Manage MySQL", then copy the exact details it shows you.
+    //
+    // The host is NOT localhost. xneelo runs the database on its own server,
+    // named like sql8.cpt1.host-h.net, and "localhost" fails with a confusing
+    // "No such file or directory" because PHP goes looking for a socket that
+    // does not exist on the web host.
     'db' => [
-        'host' => 'localhost',
+        'host' => 'sql8.cpt1.host-h.net',
         'port' => 3306,
         'name' => 'your_database_name',
         'user' => 'your_database_user',
