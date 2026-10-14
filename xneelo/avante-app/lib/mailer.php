@@ -385,6 +385,38 @@ function avante_smtp_helo_name(): string
  * lose a submission that is already stored in the database.
  */
 /*
+ * Who a submission notification goes to: the addresses configured in config.php
+ * plus any added on the admin page. Kept apart from the sending so it can be
+ * checked without emailing anybody.
+ */
+function avante_submission_recipients(): array
+{
+    $to = avante_split_addresses((string) avante_config_get('mail.to', ''));
+    $cc = avante_split_addresses((string) avante_config_get('mail.cc', ''));
+
+    // The extras live in the database, so a lookup problem must never stop the
+    // configured recipients from being emailed.
+    try {
+        foreach (avante_list_extra_recipients() as $row) {
+            $address = trim((string) ($row['email'] ?? ''));
+            if ($address === '') {
+                continue;
+            }
+            foreach (array_merge($to, $cc) as $already) {
+                if (strcasecmp($already, $address) === 0) {
+                    continue 2;
+                }
+            }
+            $cc[] = $address;
+        }
+    } catch (Throwable $e) {
+        error_log('[avante] could not read the extra recipients: ' . $e->getMessage());
+    }
+
+    return ['to' => $to, 'cc' => $cc];
+}
+
+/*
  * $only posts the message to that single address instead of the configured
  * recipients. That is what the admin page's test button uses, so a test does not
  * also land on the team's addresses.
@@ -400,8 +432,9 @@ function avante_send_submission_email(array $payload, string $subject, array $me
         $to = [trim($only)];
         $cc = [];
     } else {
-        $to = avante_split_addresses((string) avante_config_get('mail.to', ''));
-        $cc = avante_split_addresses((string) avante_config_get('mail.cc', ''));
+        $recipients = avante_submission_recipients();
+        $to = $recipients['to'];
+        $cc = $recipients['cc'];
     }
     if (!$to) {
         return ['status' => 'skipped', 'error' => 'No recipient address configured'];

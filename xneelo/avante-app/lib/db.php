@@ -68,7 +68,43 @@ function avante_schema_sql(): array
             created_at DATETIME NOT NULL,
             KEY throttle_lookup (bucket, key_hash, created_at)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+
+        "CREATE TABLE IF NOT EXISTS mail_recipients (
+            id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            email      VARCHAR(255) NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY mail_recipients_email (email)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
     ];
+}
+
+/* Extra addresses, added on the admin page, that also get a copy of each submission. */
+const AVANTE_MAX_EXTRA_RECIPIENTS = 20;
+
+function avante_list_extra_recipients(): array
+{
+    return avante_with_schema(function () {
+        return avante_db()->query('SELECT id, email FROM mail_recipients ORDER BY email')->fetchAll();
+    });
+}
+
+function avante_add_extra_recipient(string $email): bool
+{
+    return (bool) avante_with_schema(function () use ($email) {
+        $stmt = avante_db()->prepare('INSERT IGNORE INTO mail_recipients (email) VALUES (?)');
+        $stmt->execute([$email]);
+        return $stmt->rowCount() > 0;
+    });
+}
+
+function avante_remove_extra_recipient(int $id): bool
+{
+    return (bool) avante_with_schema(function () use ($id) {
+        $stmt = avante_db()->prepare('DELETE FROM mail_recipients WHERE id = ?');
+        $stmt->execute([$id]);
+        return $stmt->rowCount() > 0;
+    });
 }
 
 function avante_ensure_schema(): void

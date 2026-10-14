@@ -179,6 +179,7 @@ function avante_admin_list_page(?string $formType, int $page): string
         '<header class="bar">
       <h1>Form submissions</h1>
       <div class="right">
+        <a class="btn ghost" href="' . avante_escape_html(avante_admin_url('action=recipients')) . '">Recipients</a>
         <a class="btn ghost" href="' . avante_escape_html(avante_admin_url('action=diagnostics')) . '">Diagnostics</a>
         <a class="btn ghost" href="' . avante_escape_html(avante_admin_url('action=export' . $query)) . '">Export CSV</a>
         <form method="post" action="index.php?action=logout"><button class="btn ghost" type="submit">Sign out</button></form>
@@ -235,6 +236,70 @@ function avante_admin_diagnostics_page(array $report, ?array $test): string
         </p>
       </form>
       ' . $testBox . '
+    </main>'
+    );
+}
+
+function avante_admin_recipients_page(array $extras, ?array $notice): string
+{
+    $configuredTo = avante_split_addresses((string) avante_config_get('mail.to', ''));
+    $configuredCc = avante_split_addresses((string) avante_config_get('mail.cc', ''));
+    $toList = $configuredTo ? implode(', ', $configuredTo) : '(nobody)';
+    $ccList = $configuredCc ? implode(', ', $configuredCc) : '(nobody)';
+
+    $noticeHtml = '';
+    if ($notice !== null) {
+        $noticeHtml = '<div class="notice" style="margin:0 0 16px;max-width:none">'
+            . avante_admin_status_pill((string) $notice[0])
+            . ' ' . avante_escape_html((string) $notice[1]) . '</div>';
+    }
+
+    $rows = '';
+    foreach ($extras as $row) {
+        $rows .= '<tr>
+          <td>' . avante_escape_html((string) $row['email']) . '</td>
+          <td class="num">' . avante_escape_html((string) ($row['created_at'] ?? '')) . '</td>
+          <td style="width:1%">
+            <form method="post" action="index.php?action=recipients" style="margin:0">
+              <input type="hidden" name="do" value="remove">
+              <input type="hidden" name="id" value="' . avante_escape_html((string) $row['id']) . '">
+              <button class="btn" type="submit" style="background:#8C1D1D">Remove</button>
+            </form>
+          </td>
+        </tr>';
+    }
+
+    $list = $extras
+        ? '<table><thead><tr><th>Extra recipient</th><th>Added (UTC)</th><th></th></tr></thead><tbody>' . $rows . '</tbody></table>'
+        : '<div class="empty">Nobody extra yet.</div>';
+
+    return avante_admin_shell(
+        'Email recipients',
+        '<header class="bar">
+      <h1>Email recipients</h1>
+      <div class="right">
+        <a class="btn ghost" href="' . avante_escape_html(avante_admin_url()) . '">Submissions</a>
+        <a class="btn ghost" href="' . avante_escape_html(avante_admin_url('action=diagnostics')) . '">Diagnostics</a>
+        <form method="post" action="index.php?action=logout"><button class="btn ghost" type="submit">Sign out</button></form>
+      </div>
+    </header>
+    <main>
+      ' . $noticeHtml . '
+      <table style="margin-bottom:18px"><tbody>
+        <tr><th style="white-space:nowrap;width:230px">Every submission goes to</th><td>' . avante_escape_html($toList) . '</td></tr>
+        <tr><th>and is copied to</th><td>' . avante_escape_html($ccList) . '</td></tr>
+      </tbody></table>
+      <p style="font-size:13px;color:#6B7686;margin:0 0 16px">
+        Both of those come from <code>config.php</code>. The addresses below are added on top of them and
+        also receive a copy of every submission. They are stored in the database, so they survive restarts.
+      </p>
+      ' . $list . '
+      <form method="post" action="index.php?action=recipients" style="margin-top:20px;max-width:420px">
+        <input type="hidden" name="do" value="add">
+        <label for="email">Add an address</label>
+        <input type="email" id="email" name="email" required>
+        <button class="btn" type="submit" style="margin-top:12px">Add recipient</button>
+      </form>
     </main>'
     );
 }

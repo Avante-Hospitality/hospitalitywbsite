@@ -165,6 +165,10 @@ function avante_run_admin_endpoint(): void
         avante_admin_handle_diagnostics($method);
         return;
     }
+    if ($action === 'recipients') {
+        avante_admin_handle_recipients($method);
+        return;
+    }
 
     echo avante_admin_list_page(avante_admin_form_filter(), (int) ($_GET['page'] ?? 1));
 }
@@ -282,4 +286,45 @@ function avante_admin_handle_diagnostics(string $method): void
     }
 
     echo avante_admin_diagnostics_page(avante_admin_diagnostics_report(), $test);
+}
+
+function avante_admin_handle_recipients(string $method): void
+{
+    $notice = null;
+
+    if ($method === 'POST') {
+        if (!avante_same_origin()) {
+            http_response_code(403);
+            echo avante_admin_forbidden_page();
+            return;
+        }
+
+        $existing = array_map(
+            fn($row) => strtolower((string) $row['email']),
+            avante_list_extra_recipients()
+        );
+
+        if (($_POST['do'] ?? '') === 'add') {
+            $email = trim((string) ($_POST['email'] ?? ''));
+
+            if (!preg_match(AVANTE_EMAIL_RE, $email)) {
+                $notice = ['failed', 'That does not look like an email address.'];
+            } elseif (in_array(strtolower($email), $existing, true)) {
+                $notice = ['skipped', $email . ' is already on the list.'];
+            } elseif (count($existing) >= AVANTE_MAX_EXTRA_RECIPIENTS) {
+                $notice = ['failed', 'The list already holds ' . AVANTE_MAX_EXTRA_RECIPIENTS . ' addresses. Remove one first.'];
+            } elseif (avante_add_extra_recipient($email)) {
+                $notice = ['sent', $email . ' added - every submission will be copied to it.'];
+            } else {
+                $notice = ['failed', $email . ' could not be added.'];
+            }
+        } elseif (($_POST['do'] ?? '') === 'remove') {
+            $id = (int) ($_POST['id'] ?? 0);
+            $notice = ($id > 0 && avante_remove_extra_recipient($id))
+                ? ['sent', 'Removed.']
+                : ['failed', 'That address could not be removed.'];
+        }
+    }
+
+    echo avante_admin_recipients_page(avante_list_extra_recipients(), $notice);
 }

@@ -158,6 +158,19 @@ page content:
 `email_status = skipped`. `GET /api/health` reports `email: configured` or `not-configured`.
 The submitter's address is set as `Reply-To`, so hitting reply goes back to them.
 
+### Extra recipients
+
+Those addresses come from configuration. On the PHP deployment you can also add more without touching
+a file: **/admin → Recipients**.
+
+- They are stored in the database, so they survive restarts and redeploys.
+- They receive a **copy** of every submission, alongside `mail.cc`. `mail.to` stays the primary
+  recipient, so the "to" line is always the configured inbox.
+- An address that is already configured is skipped, so nobody is copied twice.
+- The test button sends **only** to the address you type there, never to the whole list.
+
+The Node version has no equivalent — there, recipients are configuration only.
+
 ### Reading submissions back
 
 ```bash
