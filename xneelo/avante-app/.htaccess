@@ -1,0 +1,13 @@
+# Keeps this folder unreachable from the web.
+#
+# Normally avante-app sits next to public_html and is not web-accessible at all.
+# This file only matters if you were unable to create a folder at that level and
+# uploaded avante-app inside public_html instead.
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

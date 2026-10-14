@@ -13,3 +13,9 @@ data/
 
 # Local secrets
 .env
+
+# PHP deployment (xneelo) - local settings and secrets, never commit
+xneelo/avante-app/config.php
+
+# Deployment packages - they carry live database and mailbox credentials
+*.zip

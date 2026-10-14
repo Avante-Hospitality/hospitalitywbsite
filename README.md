@@ -60,6 +60,9 @@ server/                     form API (Express + SQLite)
   forms.js                  per-form fields and validation
   mailer.js                 SMTP sending
   submissions.js            CLI to read submissions back
+xneelo/                     PHP form API for xneelo Web Hosting (see "Deploying to xneelo")
+  avante-app/               application code — upload NEXT TO public_html
+  public_html/              api/ + admin/, merged with the built site
 data/                       submissions.sqlite — git-ignored, holds personal data
 .env                        local secrets — git-ignored (copy .env.example)
 ```
@@ -118,19 +121,26 @@ notes, and the `AVANTE TRAVEL` landing pages share `src/_includes/avante/landing
 
 ## Forms and submissions
 
-Four pages have forms. Each posts JSON to the API, which **saves the submission to SQLite first and
-emails it second** — so a mail outage never loses a submission.
+Four pages have forms. Each posts JSON to the API, which **saves the submission to the database first
+and emails it second** — so a mail outage never loses a submission.
 
-| Page                                   | Endpoint                              |
-| -------------------------------------- | ------------------------------------- |
-| `avante-channel-manager-listing.html`  | `POST /api/submissions/listing`        |
-| `avante-loyalty-program.html`          | `POST /api/submissions/loyalty`        |
-| `avante-become-affiliate-form.html`    | `POST /api/submissions/affiliate`      |
-| `avante-property-affiliate-form.html`  | `POST /api/submissions/property-affiliate` |
+| Page                                   | Endpoint                                       |
+| -------------------------------------- | ---------------------------------------------- |
+| `avante-channel-manager-listing.html`  | `POST /api/submit.php?form=listing`             |
+| `avante-loyalty-program.html`          | `POST /api/submit.php?form=loyalty`             |
+| `avante-become-affiliate-form.html`    | `POST /api/submit.php?form=affiliate`           |
+| `avante-property-affiliate-form.html`  | `POST /api/submit.php?form=property-affiliate`  |
 
 The API lives in `server/` and also serves `_site/`, so the site and the API share one origin in
 production. If you ever host the API on its own domain, set `API_BASE` in the page's script to that
 URL (it is at the top of each form's script); leave it empty when the API serves the site itself.
+
+There are two implementations of that API, and **both accept the same requests and return the same
+JSON**:
+
+- `server/` — Node, for local development and Node hosts.
+- `xneelo/` — PHP, for xneelo Web Hosting, which cannot run Node. See
+  [Deploying to xneelo](#deploying-to-xneelo-web-hosting-php).
 
 Requests are validated against the field list in `server/forms.js` and throttled to 15 per IP per
 15 minutes. A hidden `_gotcha` field can be added to any form to make bots fail silently.
@@ -225,3 +235,92 @@ Node host) and each form's `API_BASE` must point at it, with `CORS_ORIGIN` set t
 ### Either way
 
 Do not commit `.env` or `data/` — both are git-ignored on purpose.
+
+## Deploying to xneelo Web Hosting (PHP)
+
+xneelo's Web Hosting is a managed **LAMP/PHP** platform. Node cannot run there, and their
+[Acceptable Use Policy](https://xneelo.co.za/legal/acceptable-use-policy/) does not allow a
+long-running server process on shared hosting. `xneelo/` therefore holds the same form API written
+in **PHP**, plus the Apache rule that keeps the existing `/api/submissions/<form>` URLs — so not one
+line of the site's own JavaScript changes.
+
+### What goes where
+
+```
+avante-app/       upload NEXT TO public_html (not inside it)
+  config.php      your settings — create it from config.example.php
+  lib/            validation, database, SMTP, admin
+  bin/            install.php, prune.php, selfcheck.php
+
+public_html/      upload its CONTENTS into your existing public_html
+  api/            submit.php, health.php
+  admin/index.php the submissions admin (the footer's "Admin" link)
+  index.html ...  the built site (from _site/)
+```
+
+### Steps
+
+1. Build the site: `npm run build`.
+2. In the xneelo Control Panel open **Manage MySQL** and create a database and a user. Copy the
+   exact names it shows you.
+3. Copy `xneelo/avante-app/config.example.php` to `config.php` (keep it in `avante-app/`) and fill in
+   the database details, SMTP settings, recipients and an `admin.password`.
+4. Upload using the panel's **File Manager**, or SFTP on port 22:
+   - everything in `_site/` → `public_html/`
+   - `xneelo/public_html/api/` and `xneelo/public_html/admin/` → `public_html/`
+   - `xneelo/avante-app/` → next to `public_html/`, i.e. one level up from it
+5. Pick a PHP version (8.2 or newer) with the panel's **PHP Config** tool.
+6. Open `https://yourdomain.co.za/api/health.php`. You want
+   `{"ok":true,"database":"ok","email":"configured",...}`.
+
+There is no install step to forget: the tables are created the first time a form is submitted.
+
+### Sending email
+
+xneelo requires SMTP authentication. Use the mailbox settings from the Control
+Panel — note the **outgoing** server is `smtp.<domain>`, which is not the same as
+the incoming `mail.<domain>` server:
+
+```php
+'smtp' => ['host' => 'smtp.avantehospitality.co.za', 'port' => 465, 'user' => 'web@avantehospitality.co.za', 'pass' => '...'],
+'mail' => ['from' => 'Avante Website <web@avantehospitality.co.za>', 'to' => 'info@avantehospitality.co.za'],
+```
+
+Port `465` uses TLS from the first byte and `587` uses STARTTLS; leave `secure` as `null` and the
+port decides. The `from` address is the authenticated mailbox, because the mail server expects the
+sender to match the account; the submitter is still set as `Reply-To`, so replying goes to them.
+Without these settings the forms still work — submissions are saved and flagged `skipped`, exactly
+like the Node version.
+
+To prove delivery end to end, sign in at `/admin` → **Diagnostics** → **Send a test email**; it shows
+the verdict of the SMTP conversation. From SSH you can also run:
+
+```bash
+php /usr/home/YOURUSER/avante-app/bin/selfcheck.php --email
+```
+
+### Retention (cron)
+
+Submissions older than `retention_days` (default 730) are deleted by:
+
+```bash
+php /usr/home/YOURUSER/avante-app/bin/prune.php
+```
+
+Add it in the panel's **Cronjob Manager** — once a day is plenty (xneelo allows at most 10 jobs, and
+no more often than every two hours).
+
+### Notes
+
+- `avante-app/config.php` holds your database and mailbox passwords. It sits outside `public_html` so
+  it can never be downloaded, and it is git-ignored. If you can only create folders *inside*
+  `public_html`, upload `avante-app` there instead — it ships with its own `.htaccess` that denies all
+  web access to the folder.
+- **No `.htaccess` is needed, and none is included.** A shared `public_html` usually already has one
+  (HTTPS forcing, WAF rules, WordPress permalinks) and overwriting it would break every site in the
+  account. Nothing here requires a change to Apache configuration.
+- **Other domains in the same account are untouched.** xneelo Multiple domains live in sub-folders of
+  `public_html`, each with its own root, and this deployment only adds `api/` and `admin/` at the top
+  level. Do check that neither folder name is already used by another site before uploading.
+- Throttling, the honeypot, validation, CSV formula neutralising and the admin sign-in all behave as
+  documented above. The throttle counters live in MySQL, so they survive between requests.
