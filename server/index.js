@@ -49,7 +49,9 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.post('/api/submissions/:formType', async (req, res) => {
+// The PHP deployment on xneelo posts to /api/submit.php?form=<type>. Accepting
+// both URLs lets the page templates stay identical in development and in production.
+app.post(['/api/submissions/:formType', '/api/submit.php'], async (req, res) => {
   const forwarded = req.headers['x-forwarded-for'];
   const ip = (typeof forwarded === 'string' ? forwarded.split(',')[0] : req.socket.remoteAddress) || 'unknown';
 
@@ -57,7 +59,7 @@ app.post('/api/submissions/:formType', async (req, res) => {
     return res.status(429).json({ success: false, error: 'Too many submissions from this connection. Please try again later.' });
   }
 
-  const { formType } = req.params;
+  const formType = req.params.formType || String(req.query.form || '');
   const body = req.body || {};
 
   // Honeypot: real people never fill this in. Report success so bots do not retry.

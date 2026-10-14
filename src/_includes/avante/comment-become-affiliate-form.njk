@@ -1,10 +1,10 @@
 {# ------------------------------------------------------------------------------
    BEFORE THIS GOES LIVE — Jean:
 
-   1. SUBMISSIONS: stored in SQLite and emailed by the API in server/ — this page
-      POSTs to /api/submissions/affiliate. Recipients, SMTP credentials and the
-      database location live in .env, not in this file. See README.md
-      ("Forms and submissions").
+   1. SUBMISSIONS: stored in a database and emailed by the API — this page POSTs
+      to /api/submit.php?form=affiliate. Recipients, SMTP credentials and the
+      database live in .env (Node, server/) or avante-app/config.php (PHP on
+      xneelo), never in this file. See README.md ("Forms and submissions").
 
    2. TERMS & CONDITIONS TEXT — STILL A DRAFT PLACEHOLDER:
       The modal below contains draft wording, not final legal text (it even says

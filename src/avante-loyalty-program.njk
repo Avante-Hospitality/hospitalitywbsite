@@ -8,9 +8,10 @@ styleFile: "avante/style-loyalty-program.njk"
 {# ------------------------------------------------------------------------------
    BEFORE THIS GOES LIVE — Jean:
 
-   1. SUBMISSIONS: stored in SQLite and emailed by the API in server/ — this page
-      POSTs to /api/submissions/loyalty. Recipients, SMTP credentials and the
-      database location live in .env, not in this file. See README.md.
+   1. SUBMISSIONS: stored in a database and emailed by the API — this page POSTs
+      to /api/submit.php?form=loyalty. Recipients, SMTP credentials and the
+      database live in .env (Node, server/) or avante-app/config.php (PHP on
+      xneelo), never in this file. See README.md.
       Arriving from the listing form's thank-you screen pre-fills Section 1.
 
    2. This page is meant to be reached only AFTER a property has already
@@ -114,10 +115,10 @@ styleFile: "avante/style-loyalty-program.njk"
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Submissions are saved to SQLite and emailed by the API in server/.
+    // Submissions are saved by the API and emailed to the team (see README).
     // If the API is hosted on a different domain, set API_BASE to its URL.
     const API_BASE = '';
-    const SUBMIT_ENDPOINT = API_BASE + '/api/submissions/loyalty';
+    const SUBMIT_ENDPOINT = API_BASE + '/api/submit.php?form=loyalty';
 
     // Pre-fill property details passed from the listing form
     const params = new URLSearchParams(window.location.search);
