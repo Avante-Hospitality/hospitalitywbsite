@@ -298,8 +298,9 @@ sender to match the account; the submitter is still set as `Reply-To`, so replyi
 Without these settings the forms still work — submissions are saved and flagged `skipped`, exactly
 like the Node version.
 
-To prove delivery end to end, sign in at `/admin` → **Diagnostics** → **Send a test email**; it shows
-the verdict of the SMTP conversation. From SSH you can also run:
+To prove delivery end to end, sign in at `/admin` → **Diagnostics**. The test button has a recipient
+field pre-filled with `mail.to`, so a test can go to any address (your own, say) without changing where
+real submissions are sent — it reports the verdict of the SMTP conversation. From SSH you can also run:
 
 ```bash
 php /usr/home/YOURUSER/avante-app/bin/selfcheck.php --email

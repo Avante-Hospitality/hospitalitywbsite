@@ -49,7 +49,7 @@ function avante_admin_shell(string $title, string $body): string
   form.login h2{margin:0 0 6px;font-size:18px;}
   form.login p.hint{margin:0 0 20px;font-size:13px;color:var(--muted);}
   label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
-  input[type=password]{width:100%;padding:11px 12px;border:1px solid #CCC;border-radius:8px;font-size:15px;font-family:inherit;}
+  input[type=password],input[type=email]{width:100%;padding:11px 12px;border:1px solid #CCC;border-radius:8px;font-size:15px;font-family:inherit;}
   .btn.wide{width:100%;margin-top:16px;padding:11px;font-size:14px;}
   .error{color:#8C1D1D;background:#FBDCDC;border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:16px;}
   .notice{background:#FDECC8;color:#8A5A00;border-radius:10px;padding:14px 16px;font-size:14px;max-width:640px;margin:40px auto;}
@@ -225,9 +225,14 @@ function avante_admin_diagnostics_page(array $report, ?array $test): string
     </header>
     <main>
       <table><tbody>' . $rows . '</tbody></table>
-      <form method="post" action="index.php?action=diagnostics" style="margin-top:16px">
+      <form method="post" action="index.php?action=diagnostics" style="margin-top:16px;max-width:420px">
         <input type="hidden" name="do" value="test-email">
-        <button class="btn" type="submit">Send a test email to ' . avante_escape_html($recipient) . '</button>
+        <label for="to">Send a test email to</label>
+        <input type="email" id="to" name="to" value="' . avante_escape_html($recipient) . '">
+        <button class="btn" type="submit" style="margin-top:12px">Send test email</button>
+        <p style="font-size:12px;color:#6B7686;margin:10px 0 0">
+          A test goes only to the address above. Real submissions still go to the addresses in config.php.
+        </p>
       </form>
       ' . $testBox . '
     </main>'

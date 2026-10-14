@@ -6,8 +6,10 @@
  * From SSH:
  *   php /usr/home/YOURUSER/avante-app/bin/selfcheck.php
  *   php /usr/home/YOURUSER/avante-app/bin/selfcheck.php --email
+ *   php /usr/home/YOURUSER/avante-app/bin/selfcheck.php --email you@example.com
  *
- * With --email it also sends a test message to the address in mail.to.
+ * With --email it sends a test message to mail.to, or to the address given
+ * after it. Either way, real submissions keep going to mail.to.
  */
 
 require __DIR__ . '/../bootstrap.php';
@@ -48,13 +50,17 @@ if (avante_mail_configured()) {
     $report('SMTP configured', false, 'set smtp.host and mail.to in config.php');
 }
 
-if (in_array('--email', $argv, true) && avante_mail_configured()) {
-    echo PHP_EOL . 'Sending a test email to ' . $recipient . ' ...' . PHP_EOL;
+$emailIndex = array_search('--email', $argv, true);
+if ($emailIndex !== false && avante_mail_configured()) {
+    $asked = trim((string) ($argv[$emailIndex + 1] ?? ''));
+    $testTo = preg_match(AVANTE_EMAIL_RE, $asked) ? $asked : $recipient;
+    echo PHP_EOL . 'Sending a test email to ' . $testTo . ' ...' . PHP_EOL;
     $result = avante_send_submission_email(
-        ['note' => 'Test message from selfcheck.php', 'email' => $recipient],
+        ['note' => 'Test message from selfcheck.php', 'email' => $testTo],
         'Avante self-check test email',
-        ['label' => 'Self-check', 'email' => $recipient],
-        0
+        ['label' => 'Self-check', 'email' => $testTo],
+        0,
+        $testTo
     );
     $report('test email', $result['status'] === 'sent', $result['status'] . ($result['error'] !== null ? ' - ' . $result['error'] : ''));
 }

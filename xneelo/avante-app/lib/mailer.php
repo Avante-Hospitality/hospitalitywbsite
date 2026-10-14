@@ -384,15 +384,25 @@ function avante_smtp_helo_name(): string
  * Sends one submission notification. Never throws, so a mail outage can never
  * lose a submission that is already stored in the database.
  */
-function avante_send_submission_email(array $payload, string $subject, array $meta, int $id): array
+/*
+ * $only posts the message to that single address instead of the configured
+ * recipients. That is what the admin page's test button uses, so a test does not
+ * also land on the team's addresses.
+ */
+function avante_send_submission_email(array $payload, string $subject, array $meta, int $id, ?string $only = null): array
 {
     if (!avante_mail_configured()) {
         return ['status' => 'skipped', 'error' => 'SMTP not configured (see config.php)'];
     }
 
     $from = avante_header_value((string) avante_config_get('mail.from', ''));
-    $to = avante_split_addresses((string) avante_config_get('mail.to', ''));
-    $cc = avante_split_addresses((string) avante_config_get('mail.cc', ''));
+    if ($only !== null && trim($only) !== '') {
+        $to = [trim($only)];
+        $cc = [];
+    } else {
+        $to = avante_split_addresses((string) avante_config_get('mail.to', ''));
+        $cc = avante_split_addresses((string) avante_config_get('mail.cc', ''));
+    }
     if (!$to) {
         return ['status' => 'skipped', 'error' => 'No recipient address configured'];
     }

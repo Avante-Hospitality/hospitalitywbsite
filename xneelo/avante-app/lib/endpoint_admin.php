@@ -256,18 +256,29 @@ function avante_admin_handle_diagnostics(string $method): void
             echo avante_admin_forbidden_page();
             return;
         }
-        $test = avante_send_submission_email(
-            [
-                'property_name' => 'Test Property',
-                'contact_person' => 'Avante test',
-                'phone' => '000 000 0000',
-                'email' => 'test@example.com',
-                'note' => 'This is a test message sent from the admin page.',
-            ],
-            'Avante website test email',
-            ['label' => 'Test email', 'email' => 'test@example.com'],
-            0
-        );
+
+        $recipient = trim((string) ($_POST['to'] ?? ''));
+        if ($recipient === '') {
+            $recipient = trim((string) avante_config_get('mail.to', ''));
+        }
+
+        if (!preg_match(AVANTE_EMAIL_RE, $recipient)) {
+            $test = ['status' => 'failed', 'error' => 'That does not look like an email address.'];
+        } else {
+            $test = avante_send_submission_email(
+                [
+                    'property_name' => 'Test Property',
+                    'contact_person' => 'Avante test',
+                    'phone' => '000 000 0000',
+                    'email' => 'test@example.com',
+                    'note' => 'This is a test message sent from the admin page.',
+                ],
+                'Avante website test email',
+                ['label' => 'Test email', 'email' => $recipient],
+                0,
+                $recipient
+            );
+        }
     }
 
     echo avante_admin_diagnostics_page(avante_admin_diagnostics_report(), $test);
