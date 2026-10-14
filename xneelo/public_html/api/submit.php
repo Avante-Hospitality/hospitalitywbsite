@@ -3,13 +3,12 @@
 /*
  * Form submissions.
  *
- * The pages POST to /api/submit.php?form=<type>. When the site is served from a
- * sub-folder, the .htaccess rewrite points the public URL at this file, so the
- * address bar never shows the folder name.
+ * The pages POST to /api/submit.php?form=<type>. This file sits at the site root
+ * and is called directly - there is no rewrite or .htaccess involved.
  */
 
-// The application usually sits inside the site folder, but it also works from
-// beside that folder or beside public_html.
+// The application normally sits in an avante-app folder in the site root, but it
+// also works from beside public_html, or one level further up.
 $bootstrap = '';
 foreach ([
     __DIR__ . '/../avante-app/bootstrap.php',
@@ -27,7 +26,7 @@ if ($bootstrap === '') {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'success' => false,
-        'error' => 'The form application is not installed: upload the avante-app folder next to public_html.',
+        'error' => 'The form application is not installed. Upload the avante-app folder into public_html (see the README).',
     ]);
     return;
 }

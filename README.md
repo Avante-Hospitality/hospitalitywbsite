@@ -243,24 +243,25 @@ xneelo's Web Hosting is a managed **LAMP/PHP** platform. Node cannot run there, 
 long-running server process on shared hosting. `xneelo/` therefore holds the same form API written
 in **PHP**, so the whole site runs on the hosting package on its own.
 
-The site is served from a folder inside `public_html` rather than from its root, which keeps its files
-clear of the other domains in the account. A short block in `public_html/.htaccess` maps the domain
-root onto that folder, so the address bar never shows the folder name. Every rule in that block is
-limited to this site's own domain, because the other domains share that file — see the notes below.
+**The deployment is upload-only: no Apache configuration is needed and no `.htaccess` is required.**
 
 ### What goes where
 
-Everything for the site lives in one folder, `public_html/avantehospitality`:
+The site's files sit at the root of `public_html`, alongside the folders the other domains in the
+account are served from:
 
 ```
 public_html/
-  .htaccess              the lines in xneelo/HTACCESS-ADDITIONS.txt go here
-  avantehospitality/     upload this whole folder
-    index.html ...       the built site (from _site/)
-    api/                 submit.php, health.php
-    admin/index.php      the submissions admin (the footer's "Admin" link)
-    avante-app/          the application: config.php, lib/, bin/
+  index.html ...       the built site (from _site/)
+  styles.css, img/     assets
+  api/                 submit.php, health.php
+  admin/index.php      the submissions admin (the footer's "Admin" link)
+  avante-app/          the application: config.php, lib/, bin/
 ```
+
+`avante-app/` ships with its own `.htaccess` that denies all web access, so `config.php` cannot be
+downloaded. If you would rather keep it outside the web root entirely, upload it next to
+`public_html` instead — the app looks in both places.
 
 ### Steps
 
@@ -269,13 +270,10 @@ public_html/
    exact names it shows you.
 3. Fill in `avante-app/config.php` — the packaged zip already has it filled in. From a fresh clone,
    copy `config.example.php` to `config.php` first.
-4. Upload using the panel's **File Manager**, or SFTP on port 22: put the whole `avantehospitality/`
-   folder into your existing `public_html/`.
-5. Add the lines from `xneelo/HTACCESS-ADDITIONS.txt` to `public_html/.htaccess`. If that file already
-   exists, paste them at the **end** rather than replacing it — the last line stops Apache processing
-   any further rules. Each line is limited to `avantehospitality.co.za`, so the other domains cannot
-   be affected by them.
-6. Pick a PHP version (8.2 or newer) with the panel's **PHP Config** tool.
+4. Upload using the panel's **File Manager**, or SFTP on port 22: copy the **contents** of the
+   package's `public_html/` folder into your existing `public_html/`. Nothing else is uploaded and no
+   existing file needs editing.
+5. Pick a PHP version (8.2 or newer) with the panel's **PHP Config** tool.
 7. Open `https://yourdomain.co.za/api/health.php`. You want
    `{"ok":true,"database":"ok","email":"configured",...}`.
 
@@ -319,26 +317,16 @@ no more often than every two hours).
 ### Notes
 
 - `avante-app/config.php` holds your database and mailbox passwords. It is git-ignored, and it ships
-  inside the site folder protected by `avante-app/.htaccess`, which denies all web access — a pattern
-  xneelo documents. If you would rather keep it outside the web root entirely, upload `avante-app`
-  next to `public_html` (or one level above it when the site is nested); the app looks in all three
-  places.
-- **The `.htaccess` block is the one thing added by hand**, and it is only needed for the folder
-  mapping. Never replace an existing `public_html/.htaccess`: other sites in the account may depend on
-  it. Append the block at the end.
-- **A `public_html/.htaccess` is also read by the other domains in the account**, because they are
-  served from folders inside `public_html`. That was verified under Apache rather than assumed, and it
-  is why every rule in the block above names `avantehospitality.co.za`: without that condition the
-  other domains get rewritten into this site's folder and return 500s. If an existing `.htaccess`
-  there has rules with no domain condition, those rules are already being applied to the other
-  domains — worth knowing, though nothing needs changing today.
-- Other domains stay reachable on their own addresses, but no longer as
-  `avantehospitality.co.za/<theirdomain>/`, because that path is rewritten into the site folder.
-- The site answers as `avantehospitality.co.za` and `www.avantehospitality.co.za`. Other hostnames
-  (the server's own name, for instance) will not serve the root, because the rules do not match them.
-- `https://avantehospitality.co.za/avantehospitality/` redirects to the root, so the site has one
-  address rather than two.
-- If xneelo support will point the main domain's document root at the folder, the `.htaccess` block
-  can be dropped altogether — that is the cleaner equivalent.
+  with an `avante-app/.htaccess` that denies all web access, so the file cannot be downloaded — a
+  pattern xneelo documents. If you would rather keep it outside the web root, upload `avante-app` next
+  to `public_html` instead; the app looks in both places.
+- **No `public_html/.htaccess` is needed, and none is included.** Uploading the files is the whole
+  deployment, so nothing here can affect the other domains in the account.
+- For the record, because it is easy to get wrong: a `.htaccess` placed in `public_html` **is** read by
+  the other domains, since they are served from folders inside it. That was established by testing
+  under Apache, and it is exactly why this deployment avoids needing one. If an `.htaccess` already
+  exists there with rules of its own, those rules are already being applied to the other domains.
+- Watch for name clashes: if `public_html/api` or `public_html/admin` already belongs to another site,
+  these files would merge into that folder. Check before uploading.
 - Throttling, the honeypot, validation, CSV formula neutralising and the admin sign-in all behave as
   documented above. The throttle counters live in MySQL, so they survive between requests.
