@@ -1,25 +1,12 @@
 ---
 permalink: /avante-channel-manager-listing.html
 eleventyExcludeFromCollections: true
+layout: layouts/forward.njk
+title: "List Your Property — Avante Hospitality"
+forwardLabel: "open List Your Property"
+eleventyComputed:
+  forwardTo: "{{ site.headerCta.url }}"
 ---
-{# The "List your property" form lives on the Avante hub (Jean, 2026-10-15):
-   there it reserves the property's Stock Network Site Nr and emails Stock
-   Network's set-up sheet. Every "List your property" button uses
-   site.headerCta.url (src/_data/site.json). This page only forwards old links
-   and QR codes there. #}
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>List Your Property — Avante Hospitality</title>
-<meta name="robots" content="noindex">
-<link rel="canonical" href="{{ site.headerCta.url }}">
-<meta http-equiv="refresh" content="0; url={{ site.headerCta.url }}">
-<script>location.replace({{ site.headerCta.url | dump | safe }});</script>
-<style>body{margin:0;font-family:system-ui,sans-serif;background:#f7f6f2;color:#1f2633;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px;text-align:center}a{color:#1e2bb8}</style>
-</head>
-<body>
-<p>Taking you to the form… If nothing happens, <a href="{{ site.headerCta.url }}">open List Your Property</a>.</p>
-</body>
-</html>
+{# The "List your property" form lives on the Avante hub (Jean, 2026-10-15).
+   Every "List your property" button uses site.headerCta.url
+   (src/_data/site.json). This page only forwards old links and QR codes. #}

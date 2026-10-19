@@ -8,13 +8,14 @@
     { "key": "loyalty", "label": "Loyalty Program", "url": "avante-loyalty-program.html" },
     { "key": "team", "label": "Team", "url": "team.html" }
   ],
+  "termsUrl": "https://go.avantetravel.co.za/terms-and-conditions.html",
   "headerCta": { "label": "List your property", "url": "https://go.avantetravel.co.za/avante-channel-manager-listing.html" },
   "footerNav": [
     { "key": "home", "label": "Home", "url": "index.html", "omitSelf": false },
     { "key": "platforms", "label": "Platforms", "url": "platforms.html", "omitSelf": true },
     { "key": "partners", "label": "Partners", "url": "partners.html", "omitSelf": true },
     { "key": "team", "label": "Team", "url": "team.html", "omitSelf": true },
-    { "key": "terms", "label": "Terms & Conditions", "url": "terms-and-conditions.html", "omitSelf": false },
+    { "key": "terms", "label": "Terms & Conditions", "url": "https://go.avantetravel.co.za/terms-and-conditions.html", "omitSelf": false },
     { "key": "affiliate", "label": "Become an affiliate", "url": "avante-affiliate-landing.html", "omitSelf": true },
     { "key": "propertyAffiliate", "label": "Property affiliate", "url": "avante-property-owner-landing.html", "omitSelf": true }
   ],
